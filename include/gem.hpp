@@ -12,7 +12,7 @@ namespace gc_game
       size_t point;
 
    public:
-      Gem(const std::string &, size_t);
+      explicit Gem(const std::string &, size_t);
       virtual bool runAnimation() = 0;
       virtual ~Gem();
    };
