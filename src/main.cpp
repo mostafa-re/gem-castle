@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include "gem.hpp"
 
 int main()
 {
