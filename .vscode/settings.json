@@ -45,5 +45,6 @@
       "map": "cpp"
    },
    "cmake.configureOnOpen": false,
-   "cSpell.words": []
+   "cSpell.words": [],
+   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }
