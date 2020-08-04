@@ -10,7 +10,6 @@ namespace gc_game
    private:
    public:
       explicit BlackGem();
-      virtual bool runAnimation() override;
    };
 } // namespace gc_game
 

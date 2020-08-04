@@ -13,8 +13,7 @@ namespace gc_game
 
    public:
       explicit Gem(const std::string &, size_t);
-      virtual bool runAnimation() = 0;
-      virtual ~Gem();
+      // virtual bool runAnimation() = 0;
    };
 } // namespace gc_game
 
