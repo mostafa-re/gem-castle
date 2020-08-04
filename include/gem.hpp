@@ -7,7 +7,7 @@ namespace gc_game
 {
    class Gem : public sf::Sprite
    {
-   private:
+   protected:
       sf::Texture sourceTex;
       size_t point;
 
