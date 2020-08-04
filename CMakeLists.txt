@@ -5,7 +5,7 @@ project(gem_castle)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-set(SOURCE src/*.cpp)
+file(GLOB SOURCE "src/*.cpp")
 set(COMPILE_FLAGS "-Wall -Wextra -g -pthread")
 
 include_directories(include)
