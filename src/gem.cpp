@@ -7,4 +7,9 @@ namespace gc_game
       this->sourceTex.loadFromFile(path);
       this->setTexture(this->sourceTex);
    }
+
+   unsigned short Gem::getID() const
+   {
+      return this->id;
+   }
 } // namespace gc_game

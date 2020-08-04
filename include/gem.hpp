@@ -14,6 +14,7 @@ namespace gc_game
 
    public:
       explicit Gem(const std::string &, unsigned short, size_t);
+      unsigned short getID() const;
       // virtual bool runAnimation() = 0;
    };
 } // namespace gc_game
