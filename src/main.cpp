@@ -1,4 +1,4 @@
-#include "gem.hpp"
+#include "black_gem.hpp"
 
 int main()
 {
@@ -14,7 +14,7 @@ int main()
             window.close();
       }
       window.clear();
-
+      window.draw(gc_game::BlackGem());
       window.display();
    }
 }
