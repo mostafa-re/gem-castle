@@ -9,10 +9,11 @@ namespace gc_game
    {
    protected:
       sf::Texture sourceTex;
+      unsigned short id;
       size_t point;
 
    public:
-      explicit Gem(const std::string &, size_t);
+      explicit Gem(const std::string &, unsigned short, size_t);
       // virtual bool runAnimation() = 0;
    };
 } // namespace gc_game
