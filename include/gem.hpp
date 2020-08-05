@@ -2,6 +2,7 @@
 #define GEM_HPP
 
 #include <SFML/Graphics.hpp>
+#include <stdexcept>
 
 namespace gc_game
 {
