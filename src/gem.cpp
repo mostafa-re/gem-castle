@@ -8,6 +8,8 @@ namespace gc_game
       {
          throw std::runtime_error("Unable to open asset files!");
       }
+      this->sourceTex.setSmooth(true);
+      this->sourceTex.setRepeated(false);
       this->setTexture(this->sourceTex);
    }
 
