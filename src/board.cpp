@@ -25,15 +25,49 @@ namespace gc_game
    {
       this->boardTex.clear(this->bgColor);
       std::default_random_engine randGenerator(time(nullptr));
-      std::uniform_int_distribution<unsigned> randDistrib(1, 6);
-      for (auto &row : this->gemIdGrid)
+      std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
+      std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
+      std::uniform_int_distribution<unsigned> randDistrib4(0, 3);
+      std::vector<unsigned short> set(6);
+
+      bool topDuplicate, leftDuplicate;
+      for (size_t i = 0; i < this->size; i++)
       {
-         for (auto &cell : row)
+         for (size_t j = 0; j < this->size; j++)
          {
-            cell = randDistrib(randGenerator);
+            set = {1, 2, 3, 4, 5, 6};
+            topDuplicate = leftDuplicate = false;
+            if (i > 2 && this->gemIdGrid[i - 1][j] == this->gemIdGrid[i - 2][j])
+            {
+               topDuplicate = true;
+               std::swap(set[this->gemIdGrid[i - 1][j] - 1], set[set.size() - 1]);
+            }
+            if (j > 2 && this->gemIdGrid[i][j - 1] == this->gemIdGrid[i][j - 2])
+            {
+               leftDuplicate = true;
+               if (topDuplicate)
+               {
+                  std::swap(set[this->gemIdGrid[i][j - 1] - 1], set[set.size() - 2]);
+               }
+               else
+               {
+                  std::swap(set[this->gemIdGrid[i][j - 1] - 1], set[set.size() - 1]);
+               }
+            }
+            if (topDuplicate && leftDuplicate)
+            {
+               this->gemIdGrid[i][j] = set[randDistrib4(randGenerator)];
+            }
+            else if (topDuplicate || leftDuplicate)
+            {
+               this->gemIdGrid[i][j] = set[randDistrib5(randGenerator)];
+            }
+            else
+            {
+               this->gemIdGrid[i][j] = set[randDistrib6(randGenerator)];
+            }
          }
       }
-      
    }
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const

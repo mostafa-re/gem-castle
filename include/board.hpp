@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vector>
 #include <random>
+#include <algorithm>
 #include "black_gem.hpp"
 #include "blue_gem.hpp"
 #include "green_gem.hpp"
