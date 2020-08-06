@@ -9,13 +9,14 @@ namespace gc_game
    class AnimationBase
    {
    protected:
+      bool done;
       sf::Transformable obj;
-      std::chrono::high_resolution_clock::time_point start;
       std::chrono::milliseconds duration;
+      std::chrono::high_resolution_clock::time_point start;
 
    public:
-      AnimationBase(sf::Transformable &, const std::chrono::milliseconds&);
-      virtual bool done() = 0;
+      explicit AnimationBase(sf::Transformable &, const std::chrono::milliseconds &);
+      virtual bool isDone() = 0;
       virtual ~AnimationBase();
    };
 } // namespace gc_game
