@@ -7,7 +7,6 @@ namespace gc_game
 {
    class BlackGem : public Gem
    {
-   private:
    public:
       explicit BlackGem();
    };
