@@ -12,7 +12,7 @@ namespace gc_game
 
    public:
       explicit MoveAnim(const std::chrono::milliseconds &, float);
-      bool run(sf::Transformable &, const sf::Vector2f &);
+      bool operator()(sf::Transformable &, const sf::Vector2f &);
    };
 } // namespace gc_game
 #endif //MOVE_ANIM_HPP
