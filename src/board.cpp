@@ -22,7 +22,8 @@ namespace gc_game
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
-
+      this->boardTex.display();
+      this->spr.setTexture(this->boardTex.getTexture());
       target.draw(this->spr, states);
    }
 } // namespace gc_game

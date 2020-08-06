@@ -11,8 +11,8 @@ namespace gc_game
    private:
       unsigned size;
       sf::Color bgColor;
-      sf::RenderTexture boardTex;
-      sf::Sprite spr;
+      mutable sf::RenderTexture boardTex;
+      mutable sf::Sprite spr;
 
    public:
       Board(unsigned);
