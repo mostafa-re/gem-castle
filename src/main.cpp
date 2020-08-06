@@ -10,7 +10,7 @@ int main()
 
    gc_game::BlackGem g1;
    gc_game::BlackGem g2;
-   g2.move(sf::Vector2f(55.f, 0.f));
+   g2.getSprite().move(sf::Vector2f(55.f, 0.f));
    gc_game::MoveAnim m(std::chrono::milliseconds(1000), 0.3f);
 
    sf::Texture gembox;
@@ -18,7 +18,6 @@ int main()
    sf::Texture click;
    click.loadFromFile("../assets/click.png");
    sf::Sprite box;
-
 
    while (window.isOpen())
    {
@@ -39,9 +38,9 @@ int main()
       window.draw(box);
       window.display();
 
-      if (g1.getPosition() != sf::Vector2f(80.f, 500.f))
+      if (g1.getSprite().getPosition() != sf::Vector2f(80.f, 500.f))
       {
-         if (m(g1, sf::Vector2f(80.f, 500.f)))
+         if (m(g1.getSprite(), sf::Vector2f(80.f, 500.f)))
          {
             m.reset();
          }

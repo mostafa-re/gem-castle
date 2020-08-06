@@ -6,17 +6,19 @@
 
 namespace gc_game
 {
-   class Gem : public sf::Sprite
+   class Gem : public sf::Drawable
    {
    protected:
+      sf::Sprite spr;
       sf::Texture sourceTex;
       unsigned short id;
       size_t point;
 
    public:
       explicit Gem(const std::string &, unsigned short, size_t);
+      sf::Sprite &getSprite();
       unsigned short getID() const;
-      // virtual bool runAnimation() = 0;
+      virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
    };
 } // namespace gc_game
 

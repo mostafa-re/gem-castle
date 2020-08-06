@@ -10,11 +10,21 @@ namespace gc_game
       }
       this->sourceTex.setSmooth(true);
       this->sourceTex.setRepeated(false);
-      this->setTexture(this->sourceTex);
+      this->spr.setTexture(this->sourceTex);
+   }
+
+   sf::Sprite &Gem::getSprite()
+   {
+      return this->spr;
    }
 
    unsigned short Gem::getID() const
    {
       return this->id;
+   }
+
+   void Gem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+   {
+      target.draw(this->spr, states);
    }
 } // namespace gc_game
