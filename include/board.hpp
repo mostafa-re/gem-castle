@@ -6,14 +6,18 @@
 
 namespace gc_game
 {
-   class Board : sf::Sprite
+   class Board : public sf::Drawable
    {
    private:
-      size_t size;
+      unsigned size;
+      sf::Color bgColor;
       sf::RenderTexture boardTex;
+      sf::Sprite spr;
 
    public:
-      Board(size_t);
+      Board(unsigned);
+      void reset();
+      virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
    };
 } // namespace gc_game
 
