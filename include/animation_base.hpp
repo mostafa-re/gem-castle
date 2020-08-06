@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <chrono>
-#include <cmath>
 
 namespace gc_game
 {
