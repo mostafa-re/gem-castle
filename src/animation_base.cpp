@@ -2,10 +2,17 @@
 
 namespace gc_game
 {
-    AnimationBase::AnimationBase(sf::Transformable &obj, const std::chrono::milliseconds &duration)
-        : done(false), obj(obj), duration(duration), start(std::chrono::high_resolution_clock::now())
+    AnimationBase::AnimationBase(const std::chrono::milliseconds &stopDuration)
+        : stopDuration(stopDuration), starTimePoint(std::chrono::high_resolution_clock::now())
     {
     }
 
-    AnimationBase::~AnimationBase() {}
+    void AnimationBase::reset()
+    {
+        this->starTimePoint = std::chrono::high_resolution_clock::now();
+    }
+
+    AnimationBase::~AnimationBase()
+    {
+    }
 } // namespace gc_game
