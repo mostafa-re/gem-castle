@@ -2,7 +2,8 @@
 
 namespace gc_game
 {
-   Gem::Gem(const std::string &path, unsigned short id, size_t point) : id(id), point(point)
+   Gem::Gem(const std::string &path, unsigned short id, size_t point)
+       : id(id), point(point), currentGemStatus(GemStatus::NONE), position(0.f, 0.f)
    {
       if (!this->sourceTex.loadFromFile(path))
       {
