@@ -11,8 +11,4 @@ namespace gc_game
     {
         this->starTimePoint = std::chrono::high_resolution_clock::now();
     }
-
-    AnimationBase::~AnimationBase()
-    {
-    }
 } // namespace gc_game

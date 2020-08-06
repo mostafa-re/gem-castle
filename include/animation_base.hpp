@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <chrono>
+#include <cmath>
 
 namespace gc_game
 {
@@ -15,8 +16,6 @@ namespace gc_game
    public:
       explicit AnimationBase(const std::chrono::milliseconds &);
       void reset();
-      virtual bool run(sf::Transformable&) = 0;
-      virtual ~AnimationBase();
    };
 } // namespace gc_game
 
