@@ -13,10 +13,12 @@ int main()
    g2.move(sf::Vector2f(55.f, 0.f));
    gc_game::MoveAnim m(std::chrono::milliseconds(1000), 0.3f);
 
-   sf::Texture t;
-   t.loadFromFile("../assets/click.png");
-   sf::Sprite s;
-   s.setTexture(t);
+   sf::Texture gembox;
+   gembox.loadFromFile("../assets/gembox.png");
+   sf::Texture click;
+   click.loadFromFile("../assets/click.png");
+   sf::Sprite box;
+
 
    while (window.isOpen())
    {
@@ -26,14 +28,20 @@ int main()
             window.close();
       }
       window.clear(sf::Color::White);
+      box.setTexture(gembox);
+      box.setPosition(sf::Vector2f(0.f, 0.f));
+      window.draw(box);
+      box.setPosition(sf::Vector2f(55.f, 0.f));
+      window.draw(box);
       window.draw(g1);
       window.draw(g2);
-      window.draw(s);
+      box.setTexture(click);
+      window.draw(box);
       window.display();
 
-      if (s.getPosition() != sf::Vector2f(80.f, 500.f))
+      if (g1.getPosition() != sf::Vector2f(80.f, 500.f))
       {
-         if (m(g1, sf::Vector2f(80.f, 500.f)) && m(s, sf::Vector2f(80.f, 500.f)))
+         if (m(g1, sf::Vector2f(80.f, 500.f)))
          {
             m.reset();
          }
