@@ -42,7 +42,8 @@
       "typeinfo": "cpp",
       "istream": "cpp",
       "iterator": "cpp",
-      "map": "cpp"
+      "map": "cpp",
+      "chrono": "cpp"
    },
    "cmake.configureOnOpen": false,
    "cSpell.words": [],
