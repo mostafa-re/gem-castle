@@ -1,5 +1,4 @@
 #include "board.hpp"
-#include "move_anim.hpp"
 
 int main()
 {

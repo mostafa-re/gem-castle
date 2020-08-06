@@ -9,6 +9,7 @@
 #include "purple_gem.hpp"
 #include "red_gem.hpp"
 #include "yellow_gem.hpp"
+#include "move_anim.hpp"
 
 namespace gc_game
 {
