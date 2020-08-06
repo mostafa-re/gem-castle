@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : isSelectable(false), size(size), bgColor(128, 128, 128, 128)
+   Board::Board(unsigned size) : isSelectable(false), size(size), bgColor(134, 128, 128, 128)
    {
       if (this->size < 4)
       {
@@ -28,7 +28,7 @@ namespace gc_game
       this->swapTex.setSmooth(true);
       this->swapTex.setRepeated(false);
       this->swapSpr.setTexture(this->swapTex);
-      
+
       for (size_t i = 0; i < this->size; i++)
       {
          this->gemIdGrid.emplace_back(this->size);
@@ -93,6 +93,14 @@ namespace gc_game
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
       this->boardTex.clear(this->bgColor);
+      for (size_t i = 0; i < this->size; i++)
+      {
+         for (size_t j = 0; j < this->size; j++)
+         {
+            this->gemBoxSpr.setPosition((i * 55) + 1, (j * 55) + 1);
+            this->boardTex.draw(this->gemBoxSpr);
+         }
+      }
 
       this->boardTex.display();
       this->boardSpr.setTexture(this->boardTex.getTexture());

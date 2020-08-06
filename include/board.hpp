@@ -25,9 +25,9 @@ namespace gc_game
       sf::Texture gemBoxTex;
       sf::Texture clickTex;
       sf::Texture swapTex;
-      sf::Sprite gemBoxSpr;
-      sf::Sprite clickSpr;
-      sf::Sprite swapSpr;
+      mutable sf::Sprite gemBoxSpr;
+      mutable sf::Sprite clickSpr;
+      mutable sf::Sprite swapSpr;
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
       std::vector<std::vector<unsigned short>> gemIdGrid;
