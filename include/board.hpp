@@ -3,6 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
+#include "black_gem.hpp"
+#include "blue_gem.hpp"
+#include "green_gem.hpp"
+#include "purple_gem.hpp"
+#include "red_gem.hpp"
+#include "yellow_gem.hpp"
 
 namespace gc_game
 {

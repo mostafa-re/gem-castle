@@ -1,4 +1,4 @@
-#include "black_gem.hpp"
+#include "board.hpp"
 #include "move_anim.hpp"
 
 int main()
