@@ -17,6 +17,8 @@ int main()
    sf::Texture click;
    click.loadFromFile("../assets/click.png");
    sf::Sprite box;
+   gc_game::Board b(9);
+
 
    while (window.isOpen())
    {

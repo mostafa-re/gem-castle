@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
+#include <vector>
+#include <random>
 #include "black_gem.hpp"
 #include "blue_gem.hpp"
 #include "green_gem.hpp"
@@ -20,6 +22,7 @@ namespace gc_game
       sf::Color bgColor;
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite spr;
+      std::vector<std::vector<unsigned short>> gemIdGrid;
 
    public:
       Board(unsigned);

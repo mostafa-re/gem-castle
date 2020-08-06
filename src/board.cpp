@@ -12,12 +12,28 @@ namespace gc_game
       {
          throw std::runtime_error("unable to create textureRender of board!");
       }
+      for (size_t i = 0; i < this->size; i++)
+      {
+         this->gemIdGrid.emplace_back(this->size);
+      }
+      this->gemIdGrid.shrink_to_fit();
+
       this->reset();
    }
 
    void Board::reset()
    {
       this->boardTex.clear(this->bgColor);
+      std::default_random_engine randGenerator(time(nullptr));
+      std::uniform_int_distribution<unsigned> randDistrib(1, 6);
+      for (auto &row : this->gemIdGrid)
+      {
+         for (auto &cell : row)
+         {
+            cell = randDistrib(randGenerator);
+         }
+      }
+      
    }
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
