@@ -30,7 +30,13 @@ namespace gc_game
       explicit Gem(const std::string &, unsigned short, size_t);
       sf::Transformable &getTransformable();
       unsigned short getID() const;
+      size_t getPoint() const;
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+      const sf::Vector2f &getPosition() const;
+      void setPosition(const sf::Vector2f &);
+      const GemStatus &getStatus() const;
+      void setStatus(const GemStatus &);
    };
 } // namespace gc_game
 

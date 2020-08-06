@@ -24,8 +24,33 @@ namespace gc_game
       return this->id;
    }
 
+   size_t Gem::getPoint() const
+   {
+      return this->point;
+   }
+
    void Gem::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
       target.draw(this->spr, states);
+   }
+
+   const sf::Vector2f &Gem::getPosition() const
+   {
+      return this->position;
+   }
+
+   void Gem::setPosition(const sf::Vector2f &pos)
+   {
+      this->position = pos;
+   }
+
+   const GemStatus &Gem::getStatus() const
+   {
+      return this->currentGemStatus;
+   }
+
+   void Gem::setStatus(const GemStatus &status)
+   {
+      this->currentGemStatus = status;
    }
 } // namespace gc_game
