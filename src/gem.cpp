@@ -13,7 +13,7 @@ namespace gc_game
       this->spr.setTexture(this->sourceTex);
    }
 
-   sf::Sprite &Gem::getSprite()
+   sf::Transformable &Gem::getTransformable()
    {
       return this->spr;
    }

@@ -16,7 +16,7 @@ namespace gc_game
 
    public:
       explicit Gem(const std::string &, unsigned short, size_t);
-      sf::Sprite &getSprite();
+      sf::Transformable &getTransformable();
       unsigned short getID() const;
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
    };
