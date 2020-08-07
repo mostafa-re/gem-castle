@@ -7,16 +7,6 @@ int main()
    window.requestFocus();
    sf::Event event;
 
-   gc_game::BlackGem g1;
-   gc_game::BlackGem g2;
-   g2.getTransformable().move(sf::Vector2f(55.f, 0.f));
-   gc_game::MoveAnim m(std::chrono::milliseconds(1000), 0.3f);
-
-   sf::Texture gembox;
-   gembox.loadFromFile("../assets/gembox.png");
-   sf::Texture click;
-   click.loadFromFile("../assets/click.png");
-   sf::Sprite box;
    gc_game::Board b(9);
    b.getTransformable().move(sf::Vector2f(130.f, 30.f));
 
@@ -28,24 +18,7 @@ int main()
             window.close();
       }
       window.clear(sf::Color::White);
-      box.setTexture(gembox);
-      box.setPosition(sf::Vector2f(0.f, 0.f));
-      window.draw(box);
-      box.setPosition(sf::Vector2f(55.f, 0.f));
-      window.draw(box);
-      window.draw(g1);
-      window.draw(g2);
-      box.setTexture(click);
-      window.draw(box);
       window.draw(b);
       window.display();
-
-      // if (g1.getTransformable().getPosition() != sf::Vector2f(80.f, 500.f))
-      // {
-      //    if (m(g1.getTransformable(), sf::Vector2f(80.f, 500.f)))
-      //    {
-      //       m.reset();
-      //    }
-      // }
    }
 }
