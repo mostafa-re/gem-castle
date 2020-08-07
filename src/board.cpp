@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : isSelectable(false), size(size), renderDone(false), renderSleep(true)
+   Board::Board(unsigned size) : size(size), clickedGem(nullptr), renderDone(false), renderSleep(true)
    {
       if (this->size < 4)
       {
@@ -208,6 +208,45 @@ namespace gc_game
                this->renderSleep = true;
             }
          }
+      }
+   }
+
+   void Board::mouseClick(const sf::Event::MouseButtonEvent &mouseButton)
+   {
+      std::lock_guard<std::mutex> lock(this->renderMutex);
+
+      if (this->renderSleep &&
+          mouseButton.x > 0 && mouseButton.y > 0 &&
+          mouseButton.x > this->boardSpr.getPosition().x &&
+          mouseButton.y > this->boardSpr.getPosition().y &&
+          mouseButton.x - this->boardSpr.getPosition().x < this->boardSpr.getLocalBounds().width &&
+          mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
+      {
+         try
+         {
+            this->clickedGem = this->gemGrid.at((mouseButton.x - this->boardSpr.getPosition().x) / 55).at((mouseButton.y - this->boardSpr.getPosition().y) / 55);
+            if (this->clickSpr.getPosition() != this->clickedGem->getTransformable().getPosition())
+            {
+               this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+               this->boardTex.draw(this->clickSpr);
+            }
+            else
+            {
+               this->clickSpr.setPosition(0, -55);
+               this->clickedGem = nullptr;
+               this->renderSleep = false;
+            }
+         }
+         catch (...)
+         {
+            this->clickedGem = nullptr;
+            this->renderSleep = false;
+         }
+      }
+      else
+      {
+         this->clickedGem = nullptr;
+         this->renderSleep = false;
       }
    }
 } // namespace gc_game

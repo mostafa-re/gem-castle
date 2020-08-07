@@ -22,7 +22,6 @@ namespace gc_game
    class Board : public sf::Drawable
    {
    private:
-      bool isSelectable;
       unsigned size;
       sf::Texture gemBoxTex;
       sf::Texture clickTex;
@@ -33,6 +32,8 @@ namespace gc_game
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
       std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
+
+      std::shared_ptr<Gem> clickedGem;
 
       std::thread renderThread;
       mutable std::mutex renderMutex;
@@ -48,6 +49,8 @@ namespace gc_game
       sf::Transformable &getTransformable();
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
       virtual ~Board() override;
+
+      void mouseClick(const sf::Event::MouseButtonEvent &);
    };
 } // namespace gc_game
 
