@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : isSelectable(false), size(size), renderDone(false)
+   Board::Board(unsigned size) : isSelectable(false), size(size), renderDone(false), renderSleep(true)
    {
       if (this->size < 4)
       {
@@ -146,6 +146,8 @@ namespace gc_game
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
+
+      this->renderSleep = false;
    }
 
    sf::Transformable &Board::getTransformable()
@@ -174,21 +176,36 @@ namespace gc_game
 
    void Board::render()
    {
-      GemAnimation anim(0.2f);
+      GemAnimation anim(0.0608f);
+      size_t withoutRenderGems;
+
       std::unique_lock<std::mutex> lock(this->renderMutex);
       while (!this->renderDone)
       {
          lock.unlock();
          std::this_thread::sleep_for(std::chrono::milliseconds(25));
          lock.lock();
-         this->clearBoard();
 
-         for (auto &rows : this->gemGrid)
+         if (!this->renderSleep)
          {
-            for (auto &item : rows)
+            this->clearBoard();
+            withoutRenderGems = 0;
+            for (auto &rows : this->gemGrid)
             {
-               anim(*item);
-               this->boardTex.draw(*item);
+               for (auto &item : rows)
+               {
+                  anim(*item);
+                  this->boardTex.draw(*item);
+                  if (item->getStatus() == GemStatus::NONE)
+                  {
+                     withoutRenderGems++;
+                  }
+               }
+            }
+
+            if (withoutRenderGems == this->size * this->size)
+            {
+               this->renderSleep = true;
             }
          }
       }

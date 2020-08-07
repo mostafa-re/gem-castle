@@ -32,11 +32,12 @@ namespace gc_game
       sf::Sprite swapSpr;
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
-      std::vector<std::vector<std::unique_ptr<Gem>>> gemGrid;
+      std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
 
       std::thread renderThread;
       mutable std::mutex renderMutex;
       bool renderDone;
+      bool renderSleep;
       void render();
 
       void clearBoard();
