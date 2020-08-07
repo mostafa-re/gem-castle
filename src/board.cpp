@@ -2,8 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size)
-       : isSelectable(false), size(size), moveAnim(std::chrono::milliseconds(10), 0.2f)
+   Board::Board(unsigned size) : isSelectable(false), size(size), renderDone(false)
    {
       if (this->size < 4)
       {
@@ -35,10 +34,11 @@ namespace gc_game
          this->gemGrid.emplace_back(this->size);
       }
       this->gemGrid.shrink_to_fit();
+      this->renderThread = std::thread(&Board::render, this);
       this->reset();
    }
 
-   void Board::clearBoard() const
+   void Board::clearBoard()
    {
       this->boardTex.clear(sf::Color(0, 0, 0, 0));
       sf::VertexArray border(sf::Lines, 2);
@@ -67,6 +67,8 @@ namespace gc_game
 
    void Board::reset()
    {
+      std::lock_guard<std::mutex> lock(this->renderMutex);
+
       std::default_random_engine randGenerator(time(nullptr));
       std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
       std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
@@ -81,12 +83,12 @@ namespace gc_game
          for (size_t j = 0; j < this->size; j++)
          {
             topDuplicate = leftDuplicate = false;
-            if (i > 2 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
+            if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
             {
                topDuplicate = true;
                std::swap(set[this->gemGrid[i - 1][j]->getID() - 1], set[set.size() - 1]);
             }
-            if (j > 2 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID())
+            if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID())
             {
                leftDuplicate = true;
                if (topDuplicate)
@@ -139,7 +141,7 @@ namespace gc_game
                break;
             }
 
-            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, -55);
+            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, -255);
             this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
@@ -153,34 +155,42 @@ namespace gc_game
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
-      this->clearBoard();
-
-      for (auto &rows : this->gemGrid)
       {
-         for (auto &cell : rows)
-         {
-            switch (cell->getStatus())
-            {
-            case GemStatus::NONE:
-               this->boardTex.draw(*cell);
-               break;
-            case GemStatus::MOVE:
-               if (this->moveAnim(cell->getTransformable(), cell->getPosition()))
-               {
-                  cell->setStatus(GemStatus::NONE);
-               }
-               this->boardTex.draw(*cell);
-               break;
+         std::lock_guard<std::mutex> lock(this->renderMutex);
+         this->boardTex.display();
+         this->boardSpr.setTexture(this->boardTex.getTexture());
+      }
+      target.draw(this->boardSpr, states);
+   }
 
-            default:
-               throw std::out_of_range("Undefined gem status!");
-               break;
+   Board::~Board()
+   {
+      {
+         std::lock_guard<std::mutex> lock(this->renderMutex);
+         this->renderDone = true;
+      }
+      this->renderThread.join();
+   }
+
+   void Board::render()
+   {
+      GemAnimation anim(0.2f);
+      std::unique_lock<std::mutex> lock(this->renderMutex);
+      while (!this->renderDone)
+      {
+         lock.unlock();
+         std::this_thread::sleep_for(std::chrono::milliseconds(25));
+         lock.lock();
+         this->clearBoard();
+
+         for (auto &rows : this->gemGrid)
+         {
+            for (auto &item : rows)
+            {
+               anim(*item);
+               this->boardTex.draw(*item);
             }
          }
       }
-
-      this->boardTex.display();
-      this->boardSpr.setTexture(this->boardTex.getTexture());
-      target.draw(this->boardSpr, states);
    }
 } // namespace gc_game

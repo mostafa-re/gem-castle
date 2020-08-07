@@ -6,14 +6,16 @@
 #include <vector>
 #include <random>
 #include <memory>
+#include <thread>
+#include <mutex>
 #include <algorithm>
+#include "gem_animation.hpp"
 #include "black_gem.hpp"
 #include "blue_gem.hpp"
 #include "green_gem.hpp"
 #include "purple_gem.hpp"
 #include "red_gem.hpp"
 #include "yellow_gem.hpp"
-#include "move_anim.hpp"
 
 namespace gc_game
 {
@@ -25,21 +27,26 @@ namespace gc_game
       sf::Texture gemBoxTex;
       sf::Texture clickTex;
       sf::Texture swapTex;
-      mutable sf::Sprite gemBoxSpr;
-      mutable sf::Sprite clickSpr;
-      mutable sf::Sprite swapSpr;
+      sf::Sprite gemBoxSpr;
+      sf::Sprite clickSpr;
+      sf::Sprite swapSpr;
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
       std::vector<std::vector<std::unique_ptr<Gem>>> gemGrid;
-      mutable MoveAnim moveAnim;
 
-      void clearBoard() const;
+      std::thread renderThread;
+      mutable std::mutex renderMutex;
+      bool renderDone;
+      void render();
+
+      void clearBoard();
 
    public:
       Board(unsigned);
       void reset();
       sf::Transformable &getTransformable();
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+      virtual ~Board() override;
    };
 } // namespace gc_game
 
