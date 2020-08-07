@@ -47,7 +47,10 @@
       "ratio": "cpp",
       "functional": "cpp",
       "numeric": "cpp",
-      "random": "cpp"
+      "random": "cpp",
+      "condition_variable": "cpp",
+      "mutex": "cpp",
+      "thread": "cpp"
    },
    "cmake.configureOnOpen": false,
    "cSpell.words": [],
