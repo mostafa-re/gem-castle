@@ -12,9 +12,9 @@ namespace gc_game
       std::chrono::milliseconds stopDuration;
       std::chrono::high_resolution_clock::time_point starTimePoint;
 
+      void reset();
    public:
       explicit AnimationBase(const std::chrono::milliseconds &);
-      void reset();
    };
 } // namespace gc_game
 

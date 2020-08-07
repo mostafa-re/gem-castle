@@ -8,9 +8,14 @@ namespace gc_game
    bool MoveAnim::operator()(sf::Transformable &obj, const sf::Vector2f &endPos)
    {
       std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - this->starTimePoint;
-      if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > this->stopDuration.count())
+      if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > this->stopDuration.count() * 2)
       {
-         if (endPos.x - obj.getPosition().x < 2.f && endPos.y - obj.getPosition().y < 2.f)
+         this->reset();
+         return false;
+      }
+      else if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > this->stopDuration.count())
+      {
+         if (endPos.x - obj.getPosition().x < 1.f && endPos.y - obj.getPosition().y < 1.f)
          {
             obj.setPosition(endPos);
             return true;
