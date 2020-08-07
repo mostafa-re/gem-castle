@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : isSelectable(false), size(size), bgColor(134, 128, 128, 128)
+   Board::Board(unsigned size) : isSelectable(false), size(size)
    {
       if (this->size < 4)
       {
@@ -14,7 +14,7 @@ namespace gc_game
       {
          throw std::runtime_error("Unable to open asset files!");
       }
-      if (!this->boardTex.create((this->size * 55) + 2, (this->size * 55) + 2))
+      if (!this->boardTex.create((this->size * 55) + 2, (this->size * 55) + 3))
       {
          throw std::runtime_error("unable to create textureRender of board!");
       }
@@ -35,6 +35,25 @@ namespace gc_game
       }
       this->gemIdGrid.shrink_to_fit();
       this->reset();
+   }
+
+   void Board::clearBoard() const
+   {
+      this->boardTex.clear(sf::Color(0, 0, 0, 0));
+      sf::VertexArray border(sf::Lines, 2);
+      border[0].color = border[1].color = sf::Color(149, 149, 149, 255);
+      border[0].position = (sf::Vector2f(2.f, 1.f));
+      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55), 1.f));
+      this->boardTex.draw(border);
+      border[0].position = (sf::Vector2f(static_cast<float>(this->size * 55) + 2, 2.f));
+      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55) + 2, static_cast<float>(this->size * 55) - 1));
+      this->boardTex.draw(border);
+      border[0].position = (sf::Vector2f(2.f, static_cast<float>(this->size * 55) + 2));
+      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55) - 1, static_cast<float>(this->size * 55) + 2));
+      this->boardTex.draw(border);
+      border[0].position = (sf::Vector2f(1.f, 2.f));
+      border[1].position = (sf::Vector2f(1.f, static_cast<float>(this->size * 55) - 1));
+      this->boardTex.draw(border);
    }
 
    void Board::reset()
@@ -92,7 +111,7 @@ namespace gc_game
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
-      this->boardTex.clear(this->bgColor);
+      this->clearBoard();
       for (size_t i = 0; i < this->size; i++)
       {
          for (size_t j = 0; j < this->size; j++)

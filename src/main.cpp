@@ -29,10 +29,10 @@ int main()
       }
       window.clear(sf::Color::White);
       box.setTexture(gembox);
-      box.setPosition(sf::Vector2f(0.f, 0.f));
-      window.draw(box);
-      box.setPosition(sf::Vector2f(55.f, 0.f));
-      window.draw(box);
+      // box.setPosition(sf::Vector2f(0.f, 0.f));
+      // window.draw(box);
+      // box.setPosition(sf::Vector2f(55.f, 0.f));
+      // window.draw(box);
       window.draw(g1);
       window.draw(g2);
       box.setTexture(click);

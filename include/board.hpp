@@ -21,7 +21,6 @@ namespace gc_game
    private:
       bool isSelectable;
       unsigned size;
-      sf::Color bgColor;
       sf::Texture gemBoxTex;
       sf::Texture clickTex;
       sf::Texture swapTex;
@@ -31,6 +30,8 @@ namespace gc_game
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
       std::vector<std::vector<unsigned short>> gemIdGrid;
+
+      void clearBoard() const;
 
    public:
       Board(unsigned);
