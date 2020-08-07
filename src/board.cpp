@@ -54,6 +54,14 @@ namespace gc_game
       border[0].position = (sf::Vector2f(1.f, 2.f));
       border[1].position = (sf::Vector2f(1.f, static_cast<float>(this->size * 55) - 1));
       this->boardTex.draw(border);
+      for (size_t i = 0; i < this->size; i++)
+      {
+         for (size_t j = 0; j < this->size; j++)
+         {
+            this->gemBoxSpr.setPosition((i * 55) + 1, (j * 55) + 1);
+            this->boardTex.draw(this->gemBoxSpr);
+         }
+      }
    }
 
    void Board::reset()
@@ -112,14 +120,6 @@ namespace gc_game
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
       this->clearBoard();
-      for (size_t i = 0; i < this->size; i++)
-      {
-         for (size_t j = 0; j < this->size; j++)
-         {
-            this->gemBoxSpr.setPosition((i * 55) + 1, (j * 55) + 1);
-            this->boardTex.draw(this->gemBoxSpr);
-         }
-      }
 
       this->boardTex.display();
       this->boardSpr.setTexture(this->boardTex.getTexture());
