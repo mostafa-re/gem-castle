@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vector>
 #include <random>
+#include <memory>
 #include <algorithm>
 #include "black_gem.hpp"
 #include "blue_gem.hpp"
@@ -29,7 +30,8 @@ namespace gc_game
       mutable sf::Sprite swapSpr;
       mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
-      std::vector<std::vector<unsigned short>> gemIdGrid;
+      std::vector<std::vector<std::unique_ptr<Gem>>> gemGrid;
+      mutable MoveAnim moveAnim;
 
       void clearBoard() const;
 

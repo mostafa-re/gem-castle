@@ -10,7 +10,7 @@ namespace gc_game
    enum class GemStatus : unsigned short
    {
       NONE,
-      MOVE_DOWN,
+      MOVE,
       SWAP_TOP,
       SWAP_BOTTOM,
       FADEOUT
