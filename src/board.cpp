@@ -226,30 +226,59 @@ namespace gc_game
    {
       std::lock_guard<std::mutex> lock(this->renderMutex);
 
-      try
+      if (this->renderSleep &&
+          mouseButton.x > 0 && mouseButton.y > 0 &&
+          mouseButton.x > this->boardSpr.getPosition().x &&
+          mouseButton.y > this->boardSpr.getPosition().y &&
+          mouseButton.x - this->boardSpr.getPosition().x < this->boardSpr.getLocalBounds().width &&
+          mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
       {
-         if (this->renderSleep &&
-             mouseButton.x > 0 && mouseButton.y > 0 &&
-             mouseButton.x > this->boardSpr.getPosition().x &&
-             mouseButton.y > this->boardSpr.getPosition().y &&
-             mouseButton.x - this->boardSpr.getPosition().x < this->boardSpr.getLocalBounds().width &&
-             mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
+         auto justClickedGem = this->gemGrid[(mouseButton.x - this->boardSpr.getPosition().x) / 55][(mouseButton.y - this->boardSpr.getPosition().y) / 55];
+         if (this->clickedGem && justClickedGem != this->clickedGem && this->isSwapable(this->clickedGem, justClickedGem))
          {
-            this->clickedGem = this->gemGrid.at((mouseButton.x - this->boardSpr.getPosition().x) / 55).at((mouseButton.y - this->boardSpr.getPosition().y) / 55);
-            if (this->clickSpr.getPosition() != this->clickedGem->getTransformable().getPosition())
-            {
-               this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
-               this->boardTex.draw(this->clickSpr);
+            this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
+            this->boardTex.draw(this->swapSpr);
 
-               this->renderSleep = false;
-               return;
-            }
+            // this->renderSleep = false;
+            return;
          }
-      }
-      catch (...)
-      {
+         this->clickedGem = justClickedGem;
+         this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+         this->boardTex.draw(this->clickSpr);
+
+         this->renderSleep = false;
+         return;
       }
       this->clearClickedGem();
       this->renderSleep = false;
    }
+
+   bool Board::isSwapable(std::shared_ptr<Gem> gem1, std::shared_ptr<Gem> gem2)
+   {
+      if (fabsf(gem1->getPosition().x - gem2->getPosition().x) <= 1.f)
+      {
+         if (fabsf(gem1->getPosition().y - gem2->getPosition().y) >= 56.f)
+         {
+            return false;
+         }
+      }
+      else if (fabsf(gem1->getPosition().y - gem2->getPosition().y) <= 1.f)
+      {
+         if (fabsf(gem1->getPosition().x - gem2->getPosition().x) >= 56.f)
+         {
+            return false;
+         }
+      }
+      else
+      {
+         return false;
+      }
+
+      if (??)
+      {
+         return true;
+      }
+      return false;
+   }
+
 } // namespace gc_game

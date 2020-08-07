@@ -45,6 +45,7 @@ namespace gc_game
       // non lock -- assistant funcs
       void clearBoard();
       void clearClickedGem();
+      bool isSwapable(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
 
    public:
       Board(unsigned);
