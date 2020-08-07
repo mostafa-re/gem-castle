@@ -18,7 +18,7 @@ int main()
    click.loadFromFile("../assets/click.png");
    sf::Sprite box;
    gc_game::Board b(9);
-
+   b.getTransformable().move(sf::Vector2f(130.f, 30.f));
 
    while (window.isOpen())
    {
@@ -29,10 +29,10 @@ int main()
       }
       window.clear(sf::Color::White);
       box.setTexture(gembox);
-      // box.setPosition(sf::Vector2f(0.f, 0.f));
-      // window.draw(box);
-      // box.setPosition(sf::Vector2f(55.f, 0.f));
-      // window.draw(box);
+      box.setPosition(sf::Vector2f(0.f, 0.f));
+      window.draw(box);
+      box.setPosition(sf::Vector2f(55.f, 0.f));
+      window.draw(box);
       window.draw(g1);
       window.draw(g2);
       box.setTexture(click);
