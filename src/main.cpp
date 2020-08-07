@@ -40,12 +40,12 @@ int main()
       window.draw(b);
       window.display();
 
-      if (g1.getTransformable().getPosition() != sf::Vector2f(80.f, 500.f))
-      {
-         if (m(g1.getTransformable(), sf::Vector2f(80.f, 500.f)))
-         {
-            m.reset();
-         }
-      }
+      // if (g1.getTransformable().getPosition() != sf::Vector2f(80.f, 500.f))
+      // {
+      //    if (m(g1.getTransformable(), sf::Vector2f(80.f, 500.f)))
+      //    {
+      //       m.reset();
+      //    }
+      // }
    }
 }
