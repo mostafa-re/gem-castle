@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : size(size), clickedGem(nullptr), renderDone(false), renderSleep(true)
+   Board::Board(unsigned size) : size(size), renderDone(false), renderSleep(true)
    {
       if (this->size < 4)
       {
@@ -63,6 +63,12 @@ namespace gc_game
             this->boardTex.draw(this->gemBoxSpr);
          }
       }
+   }
+
+   void Board::clearClickedGem()
+   {
+      this->clickSpr.setPosition(0, -55);
+      this->clickedGem = nullptr;
    }
 
    void Board::reset()
@@ -146,7 +152,7 @@ namespace gc_game
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
-
+      this->clearClickedGem();
       this->renderSleep = false;
    }
 
@@ -207,6 +213,11 @@ namespace gc_game
             {
                this->renderSleep = true;
             }
+
+            if (this->clickedGem)
+            {
+               this->boardTex.draw(this->clickSpr);
+            }
          }
       }
    }
@@ -215,38 +226,30 @@ namespace gc_game
    {
       std::lock_guard<std::mutex> lock(this->renderMutex);
 
-      if (this->renderSleep &&
-          mouseButton.x > 0 && mouseButton.y > 0 &&
-          mouseButton.x > this->boardSpr.getPosition().x &&
-          mouseButton.y > this->boardSpr.getPosition().y &&
-          mouseButton.x - this->boardSpr.getPosition().x < this->boardSpr.getLocalBounds().width &&
-          mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
+      try
       {
-         try
+         if (this->renderSleep &&
+             mouseButton.x > 0 && mouseButton.y > 0 &&
+             mouseButton.x > this->boardSpr.getPosition().x &&
+             mouseButton.y > this->boardSpr.getPosition().y &&
+             mouseButton.x - this->boardSpr.getPosition().x < this->boardSpr.getLocalBounds().width &&
+             mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
          {
             this->clickedGem = this->gemGrid.at((mouseButton.x - this->boardSpr.getPosition().x) / 55).at((mouseButton.y - this->boardSpr.getPosition().y) / 55);
             if (this->clickSpr.getPosition() != this->clickedGem->getTransformable().getPosition())
             {
                this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
                this->boardTex.draw(this->clickSpr);
-            }
-            else
-            {
-               this->clickSpr.setPosition(0, -55);
-               this->clickedGem = nullptr;
+
                this->renderSleep = false;
+               return;
             }
          }
-         catch (...)
-         {
-            this->clickedGem = nullptr;
-            this->renderSleep = false;
-         }
       }
-      else
+      catch (...)
       {
-         this->clickedGem = nullptr;
-         this->renderSleep = false;
       }
+      this->clearClickedGem();
+      this->renderSleep = false;
    }
 } // namespace gc_game

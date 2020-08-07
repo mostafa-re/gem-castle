@@ -29,10 +29,11 @@ namespace gc_game
       sf::Sprite gemBoxSpr;
       sf::Sprite clickSpr;
       sf::Sprite swapSpr;
-      mutable sf::RenderTexture boardTex;
       mutable sf::Sprite boardSpr;
-      std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
 
+      // thread based vars
+      mutable sf::RenderTexture boardTex;
+      std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
       std::shared_ptr<Gem> clickedGem;
 
       std::thread renderThread;
@@ -41,7 +42,9 @@ namespace gc_game
       bool renderSleep;
       void render();
 
+      // non lock -- assistant funcs
       void clearBoard();
+      void clearClickedGem();
 
    public:
       Board(unsigned);
