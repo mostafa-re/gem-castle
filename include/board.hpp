@@ -9,7 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <algorithm>
-#include "gem_animation.hpp"
+#include <cmath>
 #include "black_gem.hpp"
 #include "blue_gem.hpp"
 #include "green_gem.hpp"
@@ -45,6 +45,7 @@ namespace gc_game
       // non lock -- assistant funcs
       void clearBoard();
       void clearClickedGem();
+      void moveGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
 
    public:

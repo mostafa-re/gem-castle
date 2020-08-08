@@ -182,8 +182,7 @@ namespace gc_game
 
    void Board::render()
    {
-      GemAnimation anim(0.0608f);
-      std::shared_ptr<Gem> topGem;
+      float moveFactorOfGems = {0.3f};
       size_t withoutRenderGems;
 
       std::unique_lock<std::mutex> lock(this->renderMutex);
@@ -196,21 +195,32 @@ namespace gc_game
          if (!this->renderSleep)
          {
             this->clearBoard();
-            topGem = nullptr;
             withoutRenderGems = 0;
             for (auto &rows : this->gemGrid)
             {
                for (auto &item : rows)
                {
-                  anim(*item);
-                  this->boardTex.draw(*item);
-                  if (item->getStatus() == GemStatus::NONE)
+                  switch (item->getStatus())
                   {
+                  case GemStatus::NONE:
                      withoutRenderGems++;
-                  }
-                  else if (item->getStatus() == GemStatus::SWAP_TOP)
-                  {
-                     topGem = item;
+                     this->boardTex.draw(*item);
+                     break;
+
+                  case GemStatus::MOVE:
+                     this->moveGems(*item, moveFactorOfGems);
+                     this->boardTex.draw(*item);
+                     break;
+
+                  case GemStatus::SWAP:
+                     this->moveGems(*item, moveFactorOfGems);
+                     this->swapSpr.setPosition(item->getTransformable().getPosition());
+                     this->boardTex.draw(this->swapSpr);
+                     break;
+
+                  default:
+                     // std::out_of_range("Undifiend animation type detected!");
+                     break;
                   }
                }
             }
@@ -218,13 +228,16 @@ namespace gc_game
             {
                this->renderSleep = true;
             }
-
             if (this->clickedGem)
             {
-               this->boardTex.draw(this->clickSpr);
-            }
-            if(topGem){
-               this->boardTex.draw(*topGem);
+               if (clickedGem->getStatus() == GemStatus::SWAP)
+               {
+                  this->boardTex.draw(*this->clickedGem);
+               }
+               else
+               {
+                  this->boardTex.draw(this->clickSpr);
+               }
             }
          }
       }
@@ -242,29 +255,41 @@ namespace gc_game
           mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
       {
          auto justClickedGem = this->gemGrid[(mouseButton.x - this->boardSpr.getPosition().x) / 55][(mouseButton.y - this->boardSpr.getPosition().y) / 55];
-         if (this->clickedGem && justClickedGem != this->clickedGem && this->swapGems(this->clickedGem, justClickedGem))
+         if (this->clickedGem)
          {
-            this->swapSpr.setPosition(this->clickedGem->getTransformable().getPosition());
-            this->boardTex.draw(this->swapSpr);
-            this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
-            this->boardTex.draw(this->swapSpr);
+            if (this->swapGems(this->clickedGem, justClickedGem))
+            {
+               this->clickedGem = justClickedGem;
+               this->swapSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+               this->boardTex.draw(this->swapSpr);
+               this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
+               this->boardTex.draw(this->swapSpr);
+            }
+            else
+            {
+               this->clearClickedGem();
+            }
          }
          else
          {
             this->clickedGem = justClickedGem;
             this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
             this->boardTex.draw(this->clickSpr);
-
-            this->renderSleep = false;
-            return;
          }
       }
-      this->clearClickedGem();
+      else
+      {
+         this->clearClickedGem();
+      }
       this->renderSleep = false;
    }
 
    bool Board::swapGems(std::shared_ptr<Gem> gem1, std::shared_ptr<Gem> gem2)
    {
+      if (gem1 == gem2)
+      {
+         return false;
+      }
       if (fabsf(gem1->getPosition().x - gem2->getPosition().x) <= 1.f)
       {
          if (fabsf(gem1->getPosition().y - gem2->getPosition().y) >= 56.f)
@@ -405,8 +430,8 @@ namespace gc_game
          auto tempPos = gem1->getPosition();
          gem1->setPosition(gem2->getPosition());
          gem2->setPosition(tempPos);
-         gem1->setStatus(GemStatus::SWAP_TOP);
-         gem2->setStatus(GemStatus::SWAP_BOTTOM);
+         gem1->setStatus(GemStatus::SWAP);
+         gem2->setStatus(GemStatus::SWAP);
          return true;
       }
       else
@@ -416,4 +441,16 @@ namespace gc_game
       }
    }
 
+   void Board::moveGems(Gem &gem, const float &moveFactor)
+   {
+      if (fabsf(gem.getPosition().x - gem.getTransformable().getPosition().x) < 1.f && fabsf(gem.getPosition().y - gem.getTransformable().getPosition().y) < 1.f)
+      {
+         gem.getTransformable().setPosition(gem.getPosition());
+         gem.setStatus(GemStatus::NONE);
+      }
+      else
+      {
+         gem.getTransformable().move((gem.getPosition() - gem.getTransformable().getPosition()) * moveFactor);
+      }
+   }
 } // namespace gc_game
