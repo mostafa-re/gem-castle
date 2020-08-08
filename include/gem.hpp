@@ -33,6 +33,8 @@ namespace gc_game
       size_t getPoint() const;
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
+      float getHeight() const;
+      float getWidth() const;
       const sf::Vector2f &getPosition() const;
       void setPosition(const sf::Vector2f &);
       const GemStatus &getStatus() const;

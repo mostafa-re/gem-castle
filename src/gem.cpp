@@ -53,4 +53,14 @@ namespace gc_game
    {
       this->currentGemStatus = status;
    }
+
+   float Gem::getHeight() const
+   {
+      return this->spr.getLocalBounds().height * this->spr.getScale().y;
+   }
+
+   float Gem::getWidth() const
+   {
+      return this->spr.getLocalBounds().width * this->spr.getScale().x;
+   }
 } // namespace gc_game
