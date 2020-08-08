@@ -9,6 +9,8 @@ namespace gc_game
       switch (obj.getStatus())
       {
       case GemStatus::MOVE:
+      case GemStatus::SWAP_BOTTOM:
+      case GemStatus::SWAP_TOP:
          if (obj.getPosition().x - obj.getTransformable().getPosition().x < this->moveStep && obj.getPosition().y - obj.getTransformable().getPosition().y < this->moveStep)
          {
             obj.getTransformable().setPosition(obj.getPosition());
