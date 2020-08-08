@@ -4,7 +4,7 @@ namespace gc_game
 {
    Board::Board(unsigned size) : size(size), renderDone(false), renderSleep(true)
    {
-      if (this->size < 4)
+      if (this->size < 6)
       {
          throw std::invalid_argument("Board size is too small");
       }
@@ -152,6 +152,7 @@ namespace gc_game
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
+      this->point = 0;
       this->clearClickedGem();
       this->renderSleep = false;
    }
@@ -213,9 +214,10 @@ namespace gc_game
                      break;
 
                   case GemStatus::SWAP:
-                     this->moveGems(*item, moveFactorOfGems);
                      this->swapSpr.setPosition(item->getTransformable().getPosition());
+                     this->moveGems(*item, moveFactorOfGems);
                      this->boardTex.draw(this->swapSpr);
+                     this->boardTex.draw(*item);
                      break;
 
                   default:
@@ -226,7 +228,15 @@ namespace gc_game
             }
             if (withoutRenderGems == this->size * this->size)
             {
-               this->renderSleep = true;
+               if (this->checkBoard())
+               {
+                  this->clearClickedGem();
+               }
+               else
+               {
+                  this->comboIndicator = 0;
+                  this->renderSleep = true;
+               }
             }
             if (this->clickedGem)
             {
@@ -259,7 +269,6 @@ namespace gc_game
          {
             if (this->swapGems(this->clickedGem, justClickedGem))
             {
-               this->clickedGem = justClickedGem;
                this->swapSpr.setPosition(this->clickedGem->getTransformable().getPosition());
                this->boardTex.draw(this->swapSpr);
                this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
@@ -452,5 +461,184 @@ namespace gc_game
       {
          gem.getTransformable().move((gem.getPosition() - gem.getTransformable().getPosition()) * moveFactor);
       }
+   }
+
+   bool Board::checkBoard()
+   {
+      bool haveNewResualt = {false};
+      size_t totalGems;
+      size_t tempPoint;
+      size_t exteraPoint3Gem = {0};
+      size_t exteraPoint4Gem = {100};
+      size_t exteraPoint5Gem = {200};
+      size_t exteraPointMore5Gem = {400};
+
+      for (size_t i = 0; i < this->size; i++)
+      {
+         for (size_t j = 0; j < this->size; j++)
+         {
+            if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID() && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j]->getID())
+            {
+               haveNewResualt = true;
+               if (i < this->size - 1 && this->gemGrid[i + 1][j]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  //leave to catch it later
+               }
+               else
+               {
+                  totalGems = 3;
+                  for (ssize_t k = i - 3; k >= 0; k--)
+                  {
+                     if (this->gemGrid[i][j]->getID() == this->gemGrid[k][j]->getID())
+                     {
+                        totalGems++;
+                     }
+                     else
+                     {
+                        break;
+                     }
+                  }
+                  tempPoint = 0;
+                  switch (totalGems)
+                  {
+                  case 3:
+                     tempPoint += (this->gemGrid[i][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i - 1][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i - 1][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i - 2][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i - 2][j]->getPoint() : 0;
+                     this->gemGrid[i][j]->setStatus(GemStatus::FADEOUT);
+                     this->gemGrid[i - 1][j]->setStatus(GemStatus::FADEOUT);
+                     this->gemGrid[i - 2][j]->setStatus(GemStatus::FADEOUT);
+                     tempPoint += exteraPoint3Gem;
+                     break;
+                  case 4:
+                     tempPoint += (this->gemGrid[i][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i - 2][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i - 2][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i - 3][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i - 3][j]->getPoint() : 0;
+                     for (size_t k = 0; k < this->size; k++)
+                     {
+                        tempPoint += (this->gemGrid[i - 1][k]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i - 1][k]->getPoint() : 0;
+                        this->gemGrid[i - 1][k]->setStatus(GemStatus::FADEOUT);
+                     }
+                     tempPoint += exteraPoint4Gem;
+                     break;
+                  case 5:
+                     size_t k1;
+                     size_t w1;
+                     size_t k2;
+                     size_t w2;
+                     k1 = (i > 4) ? i - 4 : 0;
+                     w1 = (j > 2) ? j - 2 : 0;
+                     k2 = (i < this->size - 1) ? i + 1 : this->size;
+                     w2 = (j < this->size - 3) ? j + 3 : this->size;
+                     for (; k1 < k2; k1++)
+                     {
+                        for (; w1 < w2; w1++)
+                        {
+                           tempPoint += (this->gemGrid[k1][w1]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k1][w1]->getPoint() : 0;
+                           this->gemGrid[k1][w1]->setStatus(GemStatus::FADEOUT);
+                        }
+                     }
+                     tempPoint += exteraPoint5Gem;
+                     break;
+
+                  default:
+                     for (size_t k = 0; k < this->size; k++)
+                     {
+                        for (size_t w = 0; w < this->size; w++)
+                        {
+                           tempPoint += (this->gemGrid[k][w]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k][w]->getPoint() : 0;
+                           this->gemGrid[k][w]->setStatus(GemStatus::FADEOUT);
+                        }
+                     }
+                     tempPoint += exteraPointMore5Gem;
+                     break;
+                  }
+                  this->point += powl(2, this->comboIndicator) * tempPoint;
+                  this->comboIndicator++;
+               }
+            }
+            if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID() && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j]->getID())
+            {
+               haveNewResualt = true;
+               if (j < this->size - 1 && this->gemGrid[i][j + 1]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  //leave to catch it later
+               }
+               else
+               {
+                  totalGems = 3;
+                  for (ssize_t k = j - 3; k >= 0; k--)
+                  {
+                     if (this->gemGrid[i][j]->getID() == this->gemGrid[i][k]->getID())
+                     {
+                        totalGems++;
+                     }
+                     else
+                     {
+                        break;
+                     }
+                  }
+                  tempPoint = 0;
+                  switch (totalGems)
+                  {
+                  case 3:
+                     tempPoint += (this->gemGrid[i][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i][j - 1]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j - 1]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i][j - 2]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j - 2]->getPoint() : 0;
+                     this->gemGrid[i][j]->setStatus(GemStatus::FADEOUT);
+                     this->gemGrid[i][j - 1]->setStatus(GemStatus::FADEOUT);
+                     this->gemGrid[i][j - 2]->setStatus(GemStatus::FADEOUT);
+                     tempPoint += exteraPoint3Gem;
+                     break;
+                  case 4:
+                     tempPoint += (this->gemGrid[i][j]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i][j - 2]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j - 2]->getPoint() : 0;
+                     tempPoint += (this->gemGrid[i][j - 3]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[i][j - 3]->getPoint() : 0;
+                     for (size_t k = 0; k < this->size; k++)
+                     {
+                        tempPoint += (this->gemGrid[k][j - 1]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k][j - 1]->getPoint() : 0;
+                        this->gemGrid[k][j - 1]->setStatus(GemStatus::FADEOUT);
+                     }
+                     tempPoint += exteraPoint4Gem;
+                     break;
+                  case 5:
+                     size_t k1;
+                     size_t w1;
+                     size_t k2;
+                     size_t w2;
+                     k1 = (i > 2) ? i - 2 : 0;
+                     w1 = (j > 4) ? j - 4 : 0;
+                     k2 = (i < this->size - 3) ? i + 3 : this->size;
+                     w2 = (j < this->size - 1) ? j + 1 : this->size;
+                     for (; k1 < k2; k1++)
+                     {
+                        for (; w1 < w2; w1++)
+                        {
+                           tempPoint += (this->gemGrid[k1][w1]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k1][w1]->getPoint() : 0;
+                           this->gemGrid[k1][w1]->setStatus(GemStatus::FADEOUT);
+                        }
+                     }
+                     tempPoint += exteraPoint5Gem;
+                     break;
+
+                  default:
+                     for (size_t k = 0; k < this->size; k++)
+                     {
+                        for (size_t w = 0; w < this->size; w++)
+                        {
+                           tempPoint += (this->gemGrid[k][w]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k][w]->getPoint() : 0;
+                           this->gemGrid[k][w]->setStatus(GemStatus::FADEOUT);
+                        }
+                     }
+                     tempPoint += exteraPointMore5Gem;
+                     break;
+                  }
+                  this->point += powl(2, this->comboIndicator) * tempPoint;
+                  this->comboIndicator++;
+               }
+            }
+         }
+      }
+      return haveNewResualt;
    }
 } // namespace gc_game

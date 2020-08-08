@@ -35,6 +35,8 @@ namespace gc_game
       mutable sf::RenderTexture boardTex;
       std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
       std::shared_ptr<Gem> clickedGem;
+      size_t point;
+      size_t comboIndicator;
 
       std::thread renderThread;
       mutable std::mutex renderMutex;
@@ -47,6 +49,7 @@ namespace gc_game
       void clearClickedGem();
       void moveGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
+      bool checkBoard();
 
    public:
       Board(unsigned);
