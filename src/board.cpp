@@ -183,6 +183,7 @@ namespace gc_game
    void Board::render()
    {
       GemAnimation anim(0.0608f);
+      std::shared_ptr<Gem> topGem;
       size_t withoutRenderGems;
 
       std::unique_lock<std::mutex> lock(this->renderMutex);
@@ -195,6 +196,7 @@ namespace gc_game
          if (!this->renderSleep)
          {
             this->clearBoard();
+            topGem = nullptr;
             withoutRenderGems = 0;
             for (auto &rows : this->gemGrid)
             {
@@ -206,9 +208,12 @@ namespace gc_game
                   {
                      withoutRenderGems++;
                   }
+                  else if (item->getStatus() == GemStatus::SWAP_TOP)
+                  {
+                     topGem = item;
+                  }
                }
             }
-
             if (withoutRenderGems == this->size * this->size)
             {
                this->renderSleep = true;
@@ -217,6 +222,9 @@ namespace gc_game
             if (this->clickedGem)
             {
                this->boardTex.draw(this->clickSpr);
+            }
+            if(topGem){
+               this->boardTex.draw(*topGem);
             }
          }
       }
@@ -234,26 +242,28 @@ namespace gc_game
           mouseButton.y - this->boardSpr.getPosition().y < this->boardSpr.getLocalBounds().height)
       {
          auto justClickedGem = this->gemGrid[(mouseButton.x - this->boardSpr.getPosition().x) / 55][(mouseButton.y - this->boardSpr.getPosition().y) / 55];
-         if (this->clickedGem && justClickedGem != this->clickedGem && this->isSwapable(this->clickedGem, justClickedGem))
+         if (this->clickedGem && justClickedGem != this->clickedGem && this->swapGems(this->clickedGem, justClickedGem))
          {
+            this->swapSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+            this->boardTex.draw(this->swapSpr);
             this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
             this->boardTex.draw(this->swapSpr);
+         }
+         else
+         {
+            this->clickedGem = justClickedGem;
+            this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+            this->boardTex.draw(this->clickSpr);
 
-            // this->renderSleep = false;
+            this->renderSleep = false;
             return;
          }
-         this->clickedGem = justClickedGem;
-         this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
-         this->boardTex.draw(this->clickSpr);
-
-         this->renderSleep = false;
-         return;
       }
       this->clearClickedGem();
       this->renderSleep = false;
    }
 
-   bool Board::isSwapable(std::shared_ptr<Gem> gem1, std::shared_ptr<Gem> gem2)
+   bool Board::swapGems(std::shared_ptr<Gem> gem1, std::shared_ptr<Gem> gem2)
    {
       if (fabsf(gem1->getPosition().x - gem2->getPosition().x) <= 1.f)
       {
@@ -274,11 +284,136 @@ namespace gc_game
          return false;
       }
 
-      if (??)
+      bool match = {false};
+
+      size_t newXPosGem1 = gem2->getPosition().x / 55;
+      size_t newYPosGem1 = gem2->getPosition().y / 55;
+      size_t newXPosGem2 = gem1->getPosition().x / 55;
+      size_t newYPosGem2 = gem1->getPosition().y / 55;
+
+      std::swap(this->gemGrid[newXPosGem1][newYPosGem1], this->gemGrid[newXPosGem2][newYPosGem2]);
+
+      size_t minXToSweep;
+      size_t maxXToSweep;
+      size_t minYToSweep;
+      size_t maxYToSweep;
+
+      if (newXPosGem1 > 2)
       {
+         minXToSweep = newXPosGem1 - 2;
+      }
+      else
+      {
+         minXToSweep = 0;
+      }
+      if (newXPosGem1 < this->size - 3)
+      {
+         maxXToSweep = newXPosGem1 + 3;
+      }
+      else
+      {
+         maxXToSweep = this->size;
+      }
+      for (size_t i = minXToSweep + 2; i < maxXToSweep; i++)
+      {
+         if (this->gemGrid[i - 2][newYPosGem1]->getID() == this->gemGrid[i - 1][newYPosGem1]->getID() && this->gemGrid[i - 1][newYPosGem1]->getID() == this->gemGrid[i][newYPosGem1]->getID())
+         {
+            match = true;
+         }
+      }
+      if (!match)
+      {
+         if (newYPosGem1 > 2)
+         {
+            minYToSweep = newYPosGem1 - 2;
+         }
+         else
+         {
+            minYToSweep = 0;
+         }
+         if (newYPosGem1 < this->size - 3)
+         {
+            maxYToSweep = newYPosGem1 + 3;
+         }
+         else
+         {
+            maxYToSweep = this->size;
+         }
+         for (size_t j = minYToSweep + 2; j < maxYToSweep; j++)
+         {
+            if (this->gemGrid[newXPosGem1][j - 2]->getID() == this->gemGrid[newXPosGem1][j - 1]->getID() && this->gemGrid[newXPosGem1][j - 1]->getID() == this->gemGrid[newXPosGem1][j]->getID())
+            {
+               match = true;
+            }
+         }
+         if (!match)
+         {
+            if (newXPosGem2 > 2)
+            {
+               minXToSweep = newXPosGem2 - 2;
+            }
+            else
+            {
+               minXToSweep = 0;
+            }
+            if (newXPosGem2 < this->size - 3)
+            {
+               maxXToSweep = newXPosGem2 + 3;
+            }
+            else
+            {
+               maxXToSweep = this->size;
+            }
+            for (size_t i = minXToSweep + 2; i < maxXToSweep; i++)
+            {
+               if (this->gemGrid[i - 2][newYPosGem2]->getID() == this->gemGrid[i - 1][newYPosGem2]->getID() && this->gemGrid[i - 1][newYPosGem2]->getID() == this->gemGrid[i][newYPosGem2]->getID())
+               {
+                  match = true;
+               }
+            }
+            if (!match)
+            {
+               if (newYPosGem2 > 2)
+               {
+                  minYToSweep = newYPosGem2 - 2;
+               }
+               else
+               {
+                  minYToSweep = 0;
+               }
+               if (newYPosGem2 < this->size - 3)
+               {
+                  maxYToSweep = newYPosGem2 + 3;
+               }
+               else
+               {
+                  maxYToSweep = this->size;
+               }
+               for (size_t j = minYToSweep + 2; j < maxYToSweep; j++)
+               {
+                  if (this->gemGrid[newXPosGem2][j - 2]->getID() == this->gemGrid[newXPosGem2][j - 1]->getID() && this->gemGrid[newXPosGem2][j - 1]->getID() == this->gemGrid[newXPosGem2][j]->getID())
+                  {
+                     match = true;
+                  }
+               }
+            }
+         }
+      }
+
+      if (match)
+      {
+         auto tempPos = gem1->getPosition();
+         gem1->setPosition(gem2->getPosition());
+         gem2->setPosition(tempPos);
+         gem1->setStatus(GemStatus::SWAP_TOP);
+         gem2->setStatus(GemStatus::SWAP_BOTTOM);
          return true;
       }
-      return false;
+      else
+      {
+         std::swap(this->gemGrid[newXPosGem1][newYPosGem1], this->gemGrid[newXPosGem2][newYPosGem2]);
+         return false;
+      }
    }
 
 } // namespace gc_game
