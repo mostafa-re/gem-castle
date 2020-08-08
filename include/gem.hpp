@@ -11,9 +11,9 @@ namespace gc_game
    {
       NONE,
       MOVE,
-      SWAP_TOP,
-      SWAP_BOTTOM,
-      FADEOUT
+      SWAP,
+      FADEOUT,
+      HIDE
    };
 
    class Gem : public sf::Drawable
