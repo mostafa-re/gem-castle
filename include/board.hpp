@@ -48,6 +48,7 @@ namespace gc_game
       void clearBoard();
       void clearClickedGem();
       void moveGems(Gem &, const float &);
+      void fadeoutGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
       bool checkBoard();
 

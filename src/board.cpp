@@ -184,6 +184,7 @@ namespace gc_game
    void Board::render()
    {
       float moveFactorOfGems = {0.3f};
+      float fadeoutScaleFactorOfGems = {0.9f};
       size_t withoutRenderGems;
 
       std::unique_lock<std::mutex> lock(this->renderMutex);
@@ -219,6 +220,10 @@ namespace gc_game
                      this->boardTex.draw(this->swapSpr);
                      this->boardTex.draw(*item);
                      break;
+
+                  case GemStatus::FADEOUT:
+                     this->fadeoutGems(*item, fadeoutScaleFactorOfGems);
+                     this->boardTex.draw(*item);
 
                   default:
                      // std::out_of_range("Undifiend animation type detected!");
@@ -463,9 +468,23 @@ namespace gc_game
       }
    }
 
+   void Board::fadeoutGems(Gem &gem, const float &scaleFactor)
+   {
+      if (gem.getWidth() < 1.f && gem.getHeight() < 1.f)
+      {
+         gem.getTransformable().setScale(0, 0);
+         gem.setStatus(GemStatus::HIDE);
+      }
+      else
+      {
+         gem.getTransformable().setScale(gem.getTransformable().getScale() * scaleFactor);
+         gem.getTransformable().move(gem.getWidth() * (1.f - scaleFactor) / 2, gem.getHeight() * (1.f - scaleFactor) / 2);
+      }
+   }
+
    bool Board::checkBoard()
    {
-      bool haveNewResualt = {false};
+      bool haveNewResult = {false};
       size_t totalGems;
       size_t tempPoint;
       size_t exteraPoint3Gem = {0};
@@ -479,7 +498,7 @@ namespace gc_game
          {
             if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID() && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j]->getID())
             {
-               haveNewResualt = true;
+               haveNewResult = true;
                if (i < this->size - 1 && this->gemGrid[i + 1][j]->getID() == this->gemGrid[i][j]->getID())
                {
                   //leave to catch it later
@@ -559,7 +578,7 @@ namespace gc_game
             }
             if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID() && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j]->getID())
             {
-               haveNewResualt = true;
+               haveNewResult = true;
                if (j < this->size - 1 && this->gemGrid[i][j + 1]->getID() == this->gemGrid[i][j]->getID())
                {
                   //leave to catch it later
@@ -639,6 +658,6 @@ namespace gc_game
             }
          }
       }
-      return haveNewResualt;
+      return haveNewResult;
    }
 } // namespace gc_game
