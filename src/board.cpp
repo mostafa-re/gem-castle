@@ -553,9 +553,9 @@ namespace gc_game
                      w1 = (j > 2) ? j - 2 : 0;
                      k2 = (i < this->size - 1) ? i + 1 : this->size;
                      w2 = (j < this->size - 3) ? j + 3 : this->size;
-                     for (size_t k3 = k1; k3 < k2; k1++)
+                     for (size_t k3 = k1; k3 < k2; k3++)
                      {
-                        for (size_t w3 = w3; w1 < w2; w1++)
+                        for (size_t w3 = w1; w3 < w2; w3++)
                         {
                            tempPoint += (this->gemGrid[k3][w3]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k3][w3]->getPoint() : 0;
                            this->gemGrid[k3][w3]->setStatus(GemStatus::FADEOUT);
@@ -636,9 +636,9 @@ namespace gc_game
                      w1 = (j > 4) ? j - 4 : 0;
                      k2 = (i < this->size - 3) ? i + 3 : this->size;
                      w2 = (j < this->size - 1) ? j + 1 : this->size;
-                     for (size_t k3 = k1; k3 < k2; k1++)
+                     for (size_t k3 = k1; k3 < k2; k3++)
                      {
-                        for (size_t w3 = w3; w1 < w2; w1++)
+                        for (size_t w3 = w1; w3 < w2; w3++)
                         {
                            tempPoint += (this->gemGrid[k3][w3]->getStatus() != GemStatus::FADEOUT) ? this->gemGrid[k3][w3]->getPoint() : 0;
                            this->gemGrid[k3][w3]->setStatus(GemStatus::FADEOUT);
