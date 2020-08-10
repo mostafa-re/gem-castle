@@ -39,7 +39,7 @@ namespace gc_game
       size_t comboIndicator;
 
       std::thread renderThread;
-      mutable std::mutex renderMutex;
+      mutable std::timed_mutex renderMutex;
       bool renderDone;
       bool renderSleep;
       void render();

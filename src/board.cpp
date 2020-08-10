@@ -73,7 +73,7 @@ namespace gc_game
 
    void Board::reset()
    {
-      std::lock_guard<std::mutex> lock(this->renderMutex);
+      std::lock_guard<std::timed_mutex> lock(this->renderMutex);
 
       std::default_random_engine randGenerator(time(nullptr));
       std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
@@ -164,8 +164,9 @@ namespace gc_game
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(5));
+      if (lock)
       {
-         std::lock_guard<std::mutex> lock(this->renderMutex);
          this->boardTex.display();
          this->boardSpr.setTexture(this->boardTex.getTexture());
       }
@@ -175,7 +176,7 @@ namespace gc_game
    Board::~Board()
    {
       {
-         std::lock_guard<std::mutex> lock(this->renderMutex);
+         std::lock_guard<std::timed_mutex> lock(this->renderMutex);
          this->renderDone = true;
       }
       this->renderThread.join();
@@ -187,7 +188,7 @@ namespace gc_game
       float fadeoutScaleFactorOfGems = {0.8f};
       size_t withoutRenderGems;
 
-      std::unique_lock<std::mutex> lock(this->renderMutex);
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex);
       while (!this->renderDone)
       {
          lock.unlock();
@@ -260,7 +261,7 @@ namespace gc_game
 
    void Board::mouseClick(const sf::Event::MouseButtonEvent &mouseButton)
    {
-      std::lock_guard<std::mutex> lock(this->renderMutex);
+      std::lock_guard<std::timed_mutex> lock(this->renderMutex);
 
       if (this->renderSleep &&
           mouseButton.x > 0 && mouseButton.y > 0 &&
