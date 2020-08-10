@@ -185,7 +185,7 @@ namespace gc_game
    void Board::render()
    {
       float moveFactorOfGems = {0.3f};
-      float fadeoutScaleFactorOfGems = {0.8f};
+      float fadeoutScaleFactorOfGems = {0.7f};
       size_t withoutRenderGems;
 
       std::unique_lock<std::timed_mutex> lock(this->renderMutex);
@@ -479,7 +479,7 @@ namespace gc_game
       else
       {
          gem.getTransformable().setScale(gem.getTransformable().getScale() * scaleFactor);
-         gem.getTransformable().move(gem.getWidth() * (1.f - scaleFactor) / 2, gem.getHeight() * (1.f - scaleFactor) / 2);
+         gem.getTransformable().move(gem.getWidth() * (1.f / scaleFactor - 1.f) / 2, gem.getHeight() * (1.f / scaleFactor -1.f) / 2);
       }
    }
 
