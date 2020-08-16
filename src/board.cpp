@@ -187,6 +187,7 @@ namespace gc_game
       float moveFactorOfGems = {0.3f};
       float fadeoutScaleFactorOfGems = {0.7f};
       size_t withoutRenderGems;
+      bool haveToReload;
 
       std::unique_lock<std::timed_mutex> lock(this->renderMutex);
       while (!this->renderDone)
@@ -199,6 +200,7 @@ namespace gc_game
          {
             this->clearBoard();
             withoutRenderGems = 0;
+            haveToReload = false;
             for (auto &rows : this->gemGrid)
             {
                for (auto &item : rows)
@@ -225,7 +227,10 @@ namespace gc_game
                   case GemStatus::FADEOUT:
                      this->fadeoutGems(*item, fadeoutScaleFactorOfGems);
                      this->boardTex.draw(*item);
+                     break;
 
+                  case GemStatus::HIDE:
+                     haveToReload = true;
                   default:
                      // std::out_of_range("Undifiend animation type detected!");
                      break;
@@ -244,6 +249,9 @@ namespace gc_game
                   this->renderSleep = true;
                }
             }
+            else if (haveToReload)
+            {
+                        }
             if (this->clickedGem)
             {
                if (clickedGem->getStatus() == GemStatus::SWAP)
@@ -479,7 +487,7 @@ namespace gc_game
       else
       {
          gem.getTransformable().setScale(gem.getTransformable().getScale() * scaleFactor);
-         gem.getTransformable().move(gem.getWidth() * (1.f / scaleFactor - 1.f) / 2, gem.getHeight() * (1.f / scaleFactor -1.f) / 2);
+         gem.getTransformable().move(gem.getWidth() * (1.f / scaleFactor - 1.f) / 2, gem.getHeight() * (1.f / scaleFactor - 1.f) / 2);
       }
    }
 
