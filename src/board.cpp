@@ -99,13 +99,20 @@ namespace gc_game
                topDuplicate = true;
                if (leftDuplicate)
                {
-                  if (this->gemGrid[i][j - 1]->getID() == set.size())
+                  if (this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j - 1]->getID())
                   {
-                     std::swap(set[set[set.size() - 1] - 1], set[set.size() - 2]);
+                     topDuplicate = false;
                   }
                   else
                   {
-                     std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
+                     if (this->gemGrid[i][j - 1]->getID() == set.size())
+                     {
+                        std::swap(set[set[set.size() - 1] - 1], set[set.size() - 2]);
+                     }
+                     else
+                     {
+                        std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
+                     }
                   }
                }
                else
@@ -116,8 +123,8 @@ namespace gc_game
             if (leftDuplicate && topDuplicate)
             {
                selected = set[randDistrib4(randGenerator)];
-               std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
                std::swap(set[set[set.size() - 2] - 1], set[set.size() - 2]);
+               std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
             }
             else if (leftDuplicate || topDuplicate)
             {
@@ -153,7 +160,7 @@ namespace gc_game
                throw std::out_of_range("Unable to cerate undefined gem!");
                break;
             }
-            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, -255); // todo
+            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, 55 * (static_cast<ssize_t>(j) - this->size) - 1);
             this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
