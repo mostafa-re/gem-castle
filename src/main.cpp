@@ -2,13 +2,18 @@
 
 int main()
 {
-   sf::RenderWindow window(sf::VideoMode(800, 600), "Test window", sf::Style::Close);
+   sf::RenderWindow window(sf::VideoMode(581, 681), "Test window", sf::Style::Close);
    window.setFramerateLimit(60);
    window.requestFocus();
    sf::Event event;
 
+   sf::Texture t;
+   t.loadFromFile("../assets/bg_image.png");
+   sf::Sprite s;
+   s.setTexture(t);
+
    gc_game::Board brd(9);
-   brd.getTransformable().move(sf::Vector2f(130.f, 30.f));
+   brd.getTransformable().setPosition(42.f, 137.f);
 
    while (window.isOpen())
    {
@@ -24,6 +29,7 @@ int main()
          }
       }
       window.clear(sf::Color::White);
+      window.draw(s);
       window.draw(brd);
       window.display();
    }
