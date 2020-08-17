@@ -80,7 +80,6 @@ namespace gc_game
       std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
       std::uniform_int_distribution<unsigned> randDistrib4(0, 3);
       std::vector<unsigned short> set(6);
-      set = {1, 2, 3, 4, 5, 6};
       unsigned short selected;
 
       bool topDuplicate, leftDuplicate;
@@ -88,6 +87,7 @@ namespace gc_game
       {
          for (size_t i = 0; i < this->size; i++)
          {
+            set = {1, 2, 3, 4, 5, 6};
             topDuplicate = leftDuplicate = false;
             if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
             {
@@ -123,13 +123,10 @@ namespace gc_game
             if (leftDuplicate && topDuplicate)
             {
                selected = set[randDistrib4(randGenerator)];
-               std::swap(set[set[set.size() - 2] - 1], set[set.size() - 2]);
-               std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
             }
             else if (leftDuplicate || topDuplicate)
             {
                selected = set[randDistrib5(randGenerator)];
-               std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
             }
             else
             {
@@ -255,7 +252,11 @@ namespace gc_game
             }
             if (!haveAnimation)
             {
-               if (this->checkBoard())
+               if (haveToReload)
+               {
+                  this->reloadBoard();
+               }
+               else if (this->checkBoard())
                {
                   this->clearClickedGem();
                }
@@ -264,10 +265,6 @@ namespace gc_game
                   this->comboIndicator = 0;
                   this->renderSleep = true;
                }
-            }
-            else if (haveToReload)
-            {
-               this->reloadBoard();
             }
             if (this->clickedGem)
             {
@@ -687,11 +684,43 @@ namespace gc_game
 
    void Board::reloadBoard()
    {
-      for (size_t j = 0; j < this->size; j++)
+      bool endCol;
+      bool foundMatch;
+      for (ssize_t i = this->size - 1; i >= 0; i--)
       {
-         for (size_t i = 0; i < this->size; i++)
+         endCol = false;
+         for (ssize_t j = this->size - 1; j >= 0 && !endCol; j--)
          {
+            if (this->gemGrid[i][j]->getStatus() == GemStatus::HIDE)
+            {
+               foundMatch = false;
+               for (ssize_t k = j - 1; k >= 0 && !foundMatch; k--)
+               {
+                  if (this->gemGrid[i][k]->getStatus() != GemStatus::HIDE)
+                  {
+                     auto tempPos = this->gemGrid[i][j]->getPosition();
+                     this->gemGrid[i][j]->setPosition(this->gemGrid[i][k]->getPosition());
+                     this->gemGrid[i][k]->setPosition(tempPos);
+                     this->gemGrid[i][k]->setStatus(GemStatus::MOVE);
+                     std::swap(this->gemGrid[i][k], this->gemGrid[i][j]);
+                     foundMatch = true;
+                  }
+               }
+               if (!foundMatch)
+               {
+                  endCol = true;
+               }
+            }
          }
       }
+
+      // todo
+      // for (auto &rows : this->gemGrid)
+      // {
+      //    for (auto &item : rows)
+      //    {
+      //       item->setStatus(GemStatus::NONE);
+      //    }
+      // }
    }
 } // namespace gc_game
