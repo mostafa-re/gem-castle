@@ -67,8 +67,11 @@ namespace gc_game
 
    void Board::clearClickedGem()
    {
-      this->clickSpr.setPosition(0, -55);
-      this->clickedGem = nullptr;
+      if (!this->clickedGem)
+      {
+         this->clickSpr.setPosition(0, -55);
+         this->clickedGem = nullptr;
+      }
    }
 
    void Board::resetBoard()
