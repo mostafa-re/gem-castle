@@ -55,9 +55,9 @@ namespace gc_game
       border[0].position = (sf::Vector2f(1.f, 2.f));
       border[1].position = (sf::Vector2f(1.f, static_cast<float>(this->size * 55) - 1));
       this->boardTex.draw(border);
-      for (size_t i = 0; i < this->size; i++)
+      for (size_t j = 0; j < this->size; j++)
       {
-         for (size_t j = 0; j < this->size; j++)
+         for (size_t i = 0; i < this->size; i++)
          {
             this->gemBoxSpr.setPosition((i * 55) + 1, (j * 55) + 1);
             this->boardTex.draw(this->gemBoxSpr);
@@ -84,35 +84,42 @@ namespace gc_game
       unsigned short selected;
 
       bool topDuplicate, leftDuplicate;
-      for (size_t i = 0; i < this->size; i++)
+      for (size_t j = 0; j < this->size; j++)
       {
-         for (size_t j = 0; j < this->size; j++)
+         for (size_t i = 0; i < this->size; i++)
          {
             topDuplicate = leftDuplicate = false;
             if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
             {
-               topDuplicate = true;
+               leftDuplicate = true;
                std::swap(set[this->gemGrid[i - 1][j]->getID() - 1], set[set.size() - 1]);
             }
             if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID())
             {
-               leftDuplicate = true;
-               if (topDuplicate)
+               topDuplicate = true;
+               if (leftDuplicate)
                {
-                  std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
+                  if (this->gemGrid[i][j - 1]->getID() == set.size())
+                  {
+                     std::swap(set[set[set.size() - 1] - 1], set[set.size() - 2]);
+                  }
+                  else
+                  {
+                     std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
+                  }
                }
                else
                {
                   std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 1]);
                }
             }
-            if (topDuplicate && leftDuplicate)
+            if (leftDuplicate && topDuplicate)
             {
                selected = set[randDistrib4(randGenerator)];
                std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
                std::swap(set[set[set.size() - 2] - 1], set[set.size() - 2]);
             }
-            else if (topDuplicate || leftDuplicate)
+            else if (leftDuplicate || topDuplicate)
             {
                selected = set[randDistrib5(randGenerator)];
                std::swap(set[set[set.size() - 1] - 1], set[set.size() - 1]);
@@ -146,8 +153,7 @@ namespace gc_game
                throw std::out_of_range("Unable to cerate undefined gem!");
                break;
             }
-
-            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, -255);
+            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, -255); // todo
             this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
@@ -505,18 +511,14 @@ namespace gc_game
       size_t exteraPoint5Gem = {200};
       size_t exteraPointMore5Gem = {400};
 
-      for (size_t i = 0; i < this->size; i++)
+      for (size_t j = 0; j < this->size; j++)
       {
-         for (size_t j = 0; j < this->size; j++)
+         for (size_t i = 0; i < this->size; i++)
          {
             if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID() && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j]->getID())
             {
                haveNewResult = true;
-               if (i < this->size - 1 && this->gemGrid[i + 1][j]->getID() == this->gemGrid[i][j]->getID())
-               {
-                  //leave to catch it later
-               }
-               else
+               if (i == this->size - 1 || this->gemGrid[i + 1][j]->getID() != this->gemGrid[i][j]->getID())
                {
                   totalGems = 3;
                   for (ssize_t k = i - 3; k >= 0; k--)
@@ -595,11 +597,7 @@ namespace gc_game
             if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID() && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j]->getID())
             {
                haveNewResult = true;
-               if (j < this->size - 1 && this->gemGrid[i][j + 1]->getID() == this->gemGrid[i][j]->getID())
-               {
-                  //leave to catch it later
-               }
-               else
+               if (j == this->size - 1 || this->gemGrid[i][j + 1]->getID() != this->gemGrid[i][j]->getID())
                {
                   totalGems = 3;
                   for (ssize_t k = j - 3; k >= 0; k--)
@@ -682,5 +680,11 @@ namespace gc_game
 
    void Board::reloadBoard()
    {
+      for (size_t j = 0; j < this->size; j++)
+      {
+         for (size_t i = 0; i < this->size; i++)
+         {
+         }
       }
+   }
 } // namespace gc_game
