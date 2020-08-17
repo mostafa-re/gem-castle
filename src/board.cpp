@@ -164,7 +164,7 @@ namespace gc_game
 
    void Board::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
-      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(5));
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(1));
       if (lock)
       {
          this->boardTex.display();
@@ -186,7 +186,7 @@ namespace gc_game
    {
       float moveFactorOfGems = {0.3f};
       float fadeoutScaleFactorOfGems = {0.7f};
-      size_t withoutRenderGems;
+      bool haveAnimation;
       bool haveToReload;
 
       std::unique_lock<std::timed_mutex> lock(this->renderMutex);
@@ -199,7 +199,7 @@ namespace gc_game
          if (!this->renderSleep)
          {
             this->clearBoard();
-            withoutRenderGems = 0;
+            haveAnimation = false;
             haveToReload = false;
             for (auto &rows : this->gemGrid)
             {
@@ -208,13 +208,13 @@ namespace gc_game
                   switch (item->getStatus())
                   {
                   case GemStatus::NONE:
-                     withoutRenderGems++;
                      this->boardTex.draw(*item);
                      break;
 
                   case GemStatus::MOVE:
                      this->moveGems(*item, moveFactorOfGems);
                      this->boardTex.draw(*item);
+                     haveAnimation = true;
                      break;
 
                   case GemStatus::SWAP:
@@ -222,22 +222,25 @@ namespace gc_game
                      this->moveGems(*item, moveFactorOfGems);
                      this->boardTex.draw(this->swapSpr);
                      this->boardTex.draw(*item);
+                     haveAnimation = true;
                      break;
 
                   case GemStatus::FADEOUT:
                      this->fadeoutGems(*item, fadeoutScaleFactorOfGems);
                      this->boardTex.draw(*item);
+                     haveAnimation = true;
                      break;
 
                   case GemStatus::HIDE:
                      haveToReload = true;
+                     break;
                   default:
                      // std::out_of_range("Undifiend animation type detected!");
                      break;
                   }
                }
             }
-            if (withoutRenderGems == this->size * this->size)
+            if (!haveAnimation)
             {
                if (this->checkBoard())
                {
@@ -251,7 +254,8 @@ namespace gc_game
             }
             else if (haveToReload)
             {
-                        }
+               this->reloadBoard();
+            }
             if (this->clickedGem)
             {
                if (clickedGem->getStatus() == GemStatus::SWAP)
@@ -675,4 +679,8 @@ namespace gc_game
       }
       return haveNewResult;
    }
+
+   void Board::reloadBoard()
+   {
+      }
 } // namespace gc_game

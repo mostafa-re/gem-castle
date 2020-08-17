@@ -51,6 +51,7 @@ namespace gc_game
       void fadeoutGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
       bool checkBoard();
+      void reloadBoard();
 
    public:
       Board(unsigned);
