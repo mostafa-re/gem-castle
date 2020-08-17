@@ -71,10 +71,8 @@ namespace gc_game
       this->clickedGem = nullptr;
    }
 
-   void Board::reset()
+   void Board::resetBoard()
    {
-      std::lock_guard<std::timed_mutex> lock(this->renderMutex);
-
       std::default_random_engine randGenerator(time(nullptr));
       std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
       std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
@@ -162,7 +160,13 @@ namespace gc_game
             this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
+   }
+
+   void Board::reset()
+   {
+      std::lock_guard<std::timed_mutex> lock(this->renderMutex);
       this->point = 0;
+      this->resetBoard();
       this->clearClickedGem();
       this->renderSleep = false;
    }
@@ -203,7 +207,7 @@ namespace gc_game
       while (!this->renderDone)
       {
          lock.unlock();
-         std::this_thread::sleep_for(std::chrono::milliseconds(25));
+         std::this_thread::sleep_for(std::chrono::milliseconds(20));
          lock.lock();
 
          if (!this->renderSleep)
@@ -256,14 +260,17 @@ namespace gc_game
                {
                   this->reloadBoard();
                }
-               else if (this->checkBoard())
+               else if (this->boardEvaluation())
                {
                   this->clearClickedGem();
                }
                else
                {
                   this->comboIndicator = 0;
-                  this->renderSleep = true;
+                  if (!this->boardCheckBlock())
+                  {
+                     this->renderSleep = true;
+                  }
                }
             }
             if (this->clickedGem)
@@ -505,7 +512,7 @@ namespace gc_game
       }
    }
 
-   bool Board::checkBoard()
+   bool Board::boardEvaluation()
    {
       bool haveNewResult = {false};
       size_t totalGems;
@@ -821,5 +828,16 @@ namespace gc_game
             }
          }
       }
+   }
+
+   bool Board::boardCheckBlock()
+   {
+      bool isBoardBlocked = {false};
+
+      if (isBoardBlocked)
+      {
+         this->resetBoard();
+      }
+      return isBoardBlocked;
    }
 } // namespace gc_game

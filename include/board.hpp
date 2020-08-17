@@ -50,8 +50,10 @@ namespace gc_game
       void moveGems(Gem &, const float &);
       void fadeoutGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
-      bool checkBoard();
+      bool boardEvaluation();
       void reloadBoard();
+      void resetBoard();
+      bool boardCheckBlock();
 
    public:
       Board(unsigned);
