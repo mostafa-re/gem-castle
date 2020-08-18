@@ -19,25 +19,25 @@ namespace gc_game
    class Gem : public sf::Drawable
    {
    protected:
-      sf::Sprite spr;
-      sf::Texture sourceTex;
       unsigned short id;
-      size_t point;
       GemStatus currentGemStatus;
       sf::Vector2f position;
+      sf::Texture sourceTex;
+      sf::Sprite spr;
+      size_t point;
 
    public:
       explicit Gem(const std::string &, unsigned short, size_t);
+      virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
       sf::Transformable &getTransformable();
       unsigned short getID() const;
       size_t getPoint() const;
-      virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-      float getHeight() const;
-      float getWidth() const;
+      float getAbsoluteHeight() const;
+      float getAbsoluteWidth() const;
       const sf::Vector2f &getPosition() const;
-      void setPosition(const sf::Vector2f &);
       const GemStatus &getStatus() const;
+      void setPosition(const sf::Vector2f &);
       void setStatus(const GemStatus &);
    };
 } // namespace gc_game

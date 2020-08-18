@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Gem::Gem(const std::string &path, unsigned short id, size_t point)
-       : id(id), point(point), currentGemStatus(GemStatus::NONE), position(0.f, 0.f)
+       : id(id), currentGemStatus(GemStatus::NONE), position(0.f, 0.f), point(point)
    {
       if (!this->sourceTex.loadFromFile(path))
       {
@@ -12,6 +12,11 @@ namespace gc_game
       this->sourceTex.setSmooth(true);
       this->sourceTex.setRepeated(false);
       this->spr.setTexture(this->sourceTex);
+   }
+
+   void Gem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+   {
+      target.draw(this->spr, states);
    }
 
    sf::Transformable &Gem::getTransformable()
@@ -29,9 +34,14 @@ namespace gc_game
       return this->point;
    }
 
-   void Gem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+   float Gem::getAbsoluteHeight() const
    {
-      target.draw(this->spr, states);
+      return this->spr.getLocalBounds().height * this->spr.getScale().y;
+   }
+
+   float Gem::getAbsoluteWidth() const
+   {
+      return this->spr.getLocalBounds().width * this->spr.getScale().x;
    }
 
    const sf::Vector2f &Gem::getPosition() const
@@ -39,28 +49,18 @@ namespace gc_game
       return this->position;
    }
 
-   void Gem::setPosition(const sf::Vector2f &pos)
-   {
-      this->position = pos;
-   }
-
    const GemStatus &Gem::getStatus() const
    {
       return this->currentGemStatus;
    }
 
+   void Gem::setPosition(const sf::Vector2f &pos)
+   {
+      this->position = pos;
+   }
+
    void Gem::setStatus(const GemStatus &status)
    {
       this->currentGemStatus = status;
-   }
-
-   float Gem::getHeight() const
-   {
-      return this->spr.getLocalBounds().height * this->spr.getScale().y;
-   }
-
-   float Gem::getWidth() const
-   {
-      return this->spr.getLocalBounds().width * this->spr.getScale().x;
    }
 } // namespace gc_game

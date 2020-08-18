@@ -686,7 +686,7 @@ namespace gc_game
 
    void Board::fadeoutGems(Gem &gem, const float &scaleFactor)
    {
-      if (gem.getWidth() < 5.f && gem.getHeight() < 5.f)
+      if (gem.getAbsoluteWidth() < 5.f && gem.getAbsoluteHeight() < 5.f)
       {
          gem.getTransformable().setScale(0, 0);
          gem.setStatus(GemStatus::HIDE);
@@ -694,7 +694,7 @@ namespace gc_game
       else
       {
          gem.getTransformable().setScale(gem.getTransformable().getScale() * scaleFactor);
-         gem.getTransformable().move(gem.getWidth() * (1.f / scaleFactor - 1.f) / 2, gem.getHeight() * (1.f / scaleFactor - 1.f) / 2);
+         gem.getTransformable().move(gem.getAbsoluteWidth() * (1.f / scaleFactor - 1.f) / 2, gem.getAbsoluteHeight() * (1.f / scaleFactor - 1.f) / 2);
       }
    }
 
