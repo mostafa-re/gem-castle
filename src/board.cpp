@@ -67,7 +67,7 @@ namespace gc_game
    {
       std::lock_guard<std::timed_mutex> lock(this->renderMutex);
       this->point = 0;
-      this->resetBoard();
+      this->refreshBoard();
       this->clearClickedGem();
       this->renderSleep = false;
    }
@@ -135,97 +135,6 @@ namespace gc_game
          {
             this->gemBoxSpr.setPosition((i * 55) + 1, (j * 55) + 1);
             this->boardTex.draw(this->gemBoxSpr);
-         }
-      }
-   }
-
-   void Board::resetBoard()
-   {
-      std::default_random_engine randGenerator(time(nullptr));
-      std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
-      std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
-      std::uniform_int_distribution<unsigned> randDistrib4(0, 3);
-      std::vector<unsigned short> set(6);
-      unsigned short selected;
-
-      bool topDuplicate, leftDuplicate;
-      for (size_t j = 0; j < this->size; j++)
-      {
-         for (size_t i = 0; i < this->size; i++)
-         {
-            set = {1, 2, 3, 4, 5, 6};
-            topDuplicate = leftDuplicate = false;
-            if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
-            {
-               leftDuplicate = true;
-               std::swap(set[this->gemGrid[i - 1][j]->getID() - 1], set[set.size() - 1]);
-            }
-            if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID())
-            {
-               topDuplicate = true;
-               if (leftDuplicate)
-               {
-                  if (this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j - 1]->getID())
-                  {
-                     topDuplicate = false;
-                  }
-                  else
-                  {
-                     if (this->gemGrid[i][j - 1]->getID() == set.size())
-                     {
-                        std::swap(set[set[set.size() - 1] - 1], set[set.size() - 2]);
-                     }
-                     else
-                     {
-                        std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
-                     }
-                  }
-               }
-               else
-               {
-                  std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 1]);
-               }
-            }
-            if (leftDuplicate && topDuplicate)
-            {
-               selected = set[randDistrib4(randGenerator)];
-            }
-            else if (leftDuplicate || topDuplicate)
-            {
-               selected = set[randDistrib5(randGenerator)];
-            }
-            else
-            {
-               selected = set[randDistrib6(randGenerator)];
-            }
-            switch (selected)
-            {
-            case 1:
-               this->gemGrid[i][j].reset(new BlackGem());
-               break;
-            case 2:
-               this->gemGrid[i][j].reset(new BlueGem());
-               break;
-            case 3:
-               this->gemGrid[i][j].reset(new GreenGem());
-               break;
-            case 4:
-               this->gemGrid[i][j].reset(new PurpleGem());
-               break;
-            case 5:
-               this->gemGrid[i][j].reset(new RedGem());
-               break;
-            case 6:
-               this->gemGrid[i][j].reset(new YellowGem());
-               break;
-
-            default:
-               throw std::out_of_range("Unable to cerate undefined gem!");
-               break;
-            }
-            this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
-            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, 55 * (static_cast<ssize_t>(j) - this->size) - 1);
-            this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
    }
@@ -367,6 +276,97 @@ namespace gc_game
             {
                this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
             }
+         }
+      }
+   }
+
+   void Board::refreshBoard()
+   {
+      std::default_random_engine randGenerator(time(nullptr));
+      std::uniform_int_distribution<unsigned> randDistrib6(0, 5);
+      std::uniform_int_distribution<unsigned> randDistrib5(0, 4);
+      std::uniform_int_distribution<unsigned> randDistrib4(0, 3);
+      std::vector<unsigned short> set(6);
+      unsigned short selected;
+
+      bool topDuplicate, leftDuplicate;
+      for (size_t j = 0; j < this->size; j++)
+      {
+         for (size_t i = 0; i < this->size; i++)
+         {
+            set = {1, 2, 3, 4, 5, 6};
+            topDuplicate = leftDuplicate = false;
+            if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i - 2][j]->getID())
+            {
+               leftDuplicate = true;
+               std::swap(set[this->gemGrid[i - 1][j]->getID() - 1], set[set.size() - 1]);
+            }
+            if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID())
+            {
+               topDuplicate = true;
+               if (leftDuplicate)
+               {
+                  if (this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j - 1]->getID())
+                  {
+                     topDuplicate = false;
+                  }
+                  else
+                  {
+                     if (this->gemGrid[i][j - 1]->getID() == set.size())
+                     {
+                        std::swap(set[set[set.size() - 1] - 1], set[set.size() - 2]);
+                     }
+                     else
+                     {
+                        std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 2]);
+                     }
+                  }
+               }
+               else
+               {
+                  std::swap(set[this->gemGrid[i][j - 1]->getID() - 1], set[set.size() - 1]);
+               }
+            }
+            if (leftDuplicate && topDuplicate)
+            {
+               selected = set[randDistrib4(randGenerator)];
+            }
+            else if (leftDuplicate || topDuplicate)
+            {
+               selected = set[randDistrib5(randGenerator)];
+            }
+            else
+            {
+               selected = set[randDistrib6(randGenerator)];
+            }
+            switch (selected)
+            {
+            case 1:
+               this->gemGrid[i][j].reset(new BlackGem());
+               break;
+            case 2:
+               this->gemGrid[i][j].reset(new BlueGem());
+               break;
+            case 3:
+               this->gemGrid[i][j].reset(new GreenGem());
+               break;
+            case 4:
+               this->gemGrid[i][j].reset(new PurpleGem());
+               break;
+            case 5:
+               this->gemGrid[i][j].reset(new RedGem());
+               break;
+            case 6:
+               this->gemGrid[i][j].reset(new YellowGem());
+               break;
+
+            default:
+               throw std::out_of_range("Unable to cerate undefined gem!");
+               break;
+            }
+            this->gemGrid[i][j]->setStatus(GemStatus::MOVE);
+            this->gemGrid[i][j]->getTransformable().setPosition((i * 55) + 1, 55 * (static_cast<ssize_t>(j) - this->size) - 1);
+            this->gemGrid[i][j]->setPosition(sf::Vector2f((i * 55) + 1, (j * 55) + 1));
          }
       }
    }
@@ -666,7 +666,7 @@ namespace gc_game
       }
       if (isBoardBlocked)
       {
-         this->resetBoard();
+         this->refreshBoard();
       }
       return isBoardBlocked;
    }

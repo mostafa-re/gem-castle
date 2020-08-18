@@ -47,8 +47,8 @@ namespace gc_game
 
       // non lock -- assistant funcs
       void clearBoard();
-      void resetBoard();
       void reloadBoard();
+      void refreshBoard();
       void clearClickedGem();
       bool boardEvaluation();
       bool boardCheckBlock();
