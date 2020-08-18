@@ -32,12 +32,13 @@ namespace gc_game
       mutable sf::Sprite boardSpr;
 
       // thread based vars
+      size_t point;
+      size_t comboIndicator;
       mutable sf::RenderTexture boardTex;
       std::vector<std::vector<std::shared_ptr<Gem>>> gemGrid;
       std::shared_ptr<Gem> clickedGem;
-      size_t point;
-      size_t comboIndicator;
 
+      // thread utils
       std::thread renderThread;
       mutable std::timed_mutex renderMutex;
       bool renderDone;
@@ -46,22 +47,27 @@ namespace gc_game
 
       // non lock -- assistant funcs
       void clearBoard();
+      void resetBoard();
+      void reloadBoard();
       void clearClickedGem();
+      bool boardEvaluation();
+      bool boardCheckBlock();
       void moveGems(Gem &, const float &);
       void fadeoutGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
-      bool boardEvaluation();
-      void reloadBoard();
-      void resetBoard();
-      bool boardCheckBlock();
 
    public:
       Board(unsigned);
-      void reset();
+      Board(const Board &) = delete;
+      Board(Board &&) = delete;
+      Board &operator=(const Board &) = delete;
+      Board &operator=(Board &&) = delete;
+
       sf::Transformable &getTransformable();
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
       virtual ~Board() override;
 
+      void reset();
       void mouseClick(const sf::Event::MouseButtonEvent &);
    };
 } // namespace gc_game
