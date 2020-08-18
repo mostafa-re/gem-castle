@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Window::Window()
-       : renderWin(sf::VideoMode(581, 681), "Gem castle", sf::Style::Close), mainBoard(9)
+       : renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), mainBoard(9)
    {
       if (!this->bgTex.loadFromFile("../assets/bg_image.png"))
       {
@@ -12,6 +12,7 @@ namespace gc_game
       this->bgTex.setSmooth(true);
       this->bgTex.setRepeated(false);
       this->bgSpr.setTexture(this->bgTex);
+      this->renderWin.setFramerateLimit(60);
       this->mainBoard.getTransformable().setPosition(42.f, 137.f);
    }
 
