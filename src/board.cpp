@@ -67,7 +67,7 @@ namespace gc_game
 
    void Board::clearClickedGem()
    {
-      if (!this->clickedGem)
+      if (this->clickedGem)
       {
          this->clickSpr.setPosition(0, -55);
          this->clickedGem = nullptr;
@@ -835,8 +835,111 @@ namespace gc_game
 
    bool Board::boardCheckBlock()
    {
-      bool isBoardBlocked = {false};
+      bool isBoardBlocked = {true};
 
+      for (size_t j = 0; j < this->size && isBoardBlocked; j++)
+      {
+         for (size_t i = 0; i < this->size && isBoardBlocked; i++)
+         {
+            if (i > 1 && this->gemGrid[i - 1][j]->getID() == this->gemGrid[i][j]->getID())
+            {
+               if (j > 0 && this->gemGrid[i - 2][j - 1]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  isBoardBlocked = false;
+               }
+               else if (j < this->size - 1 && this->gemGrid[i - 2][j + 1]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  isBoardBlocked = false;
+               }
+               else if (i > 2 && this->gemGrid[i - 3][j]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  isBoardBlocked = false;
+               }
+            }
+            if (isBoardBlocked)
+            {
+               if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j]->getID())
+               {
+                  if (i > 0 && this->gemGrid[i - 1][j - 2]->getID() == this->gemGrid[i][j]->getID())
+                  {
+                     isBoardBlocked = false;
+                  }
+                  else if (i < this->size - 1 && this->gemGrid[i + 1][j - 2]->getID() == this->gemGrid[i][j]->getID())
+                  {
+                     isBoardBlocked = false;
+                  }
+                  else if (j > 2 && this->gemGrid[i][j - 3]->getID() == this->gemGrid[i][j]->getID())
+                  {
+                     isBoardBlocked = false;
+                  }
+               }
+               if (isBoardBlocked)
+               {
+                  if (i < this->size - 2 && this->gemGrid[i + 1][j]->getID() == this->gemGrid[i][j]->getID())
+                  {
+                     if (j > 0 && this->gemGrid[i + 2][j - 1]->getID() == this->gemGrid[i][j]->getID())
+                     {
+                        isBoardBlocked = false;
+                     }
+                     else if (j < this->size - 1 && this->gemGrid[i + 2][j + 1]->getID() == this->gemGrid[i][j]->getID())
+                     {
+                        isBoardBlocked = false;
+                     }
+                     else if (i < this->size - 3 && this->gemGrid[i + 3][j]->getID() == this->gemGrid[i][j]->getID())
+                     {
+                        isBoardBlocked = false;
+                     }
+                     if (isBoardBlocked)
+                     {
+                        if (j < this->size - 2 && this->gemGrid[i][j + 1]->getID() == this->gemGrid[i][j]->getID())
+                        {
+                           if (i > 0 && this->gemGrid[i - 1][j + 2]->getID() == this->gemGrid[i][j]->getID())
+                           {
+                              isBoardBlocked = false;
+                           }
+                           else if (i < this->size - 1 && this->gemGrid[i + 1][j + 2]->getID() == this->gemGrid[i][j]->getID())
+                           {
+                              isBoardBlocked = false;
+                           }
+                           else if (j < this->size - 3 && this->gemGrid[i][j + 3]->getID() == this->gemGrid[i][j]->getID())
+                           {
+                              isBoardBlocked = false;
+                           }
+                           if (isBoardBlocked)
+                           {
+                              if (i > 1 && this->gemGrid[i - 2][j]->getID() == this->gemGrid[i][j]->getID())
+                              {
+                                 if (j > 0 && this->gemGrid[i - 1][j - 1]->getID() == this->gemGrid[i][j]->getID())
+                                 {
+                                    isBoardBlocked = false;
+                                 }
+                                 else if (j < this->size - 1 && this->gemGrid[i - 1][j + 1]->getID() == this->gemGrid[i][j]->getID())
+                                 {
+                                    isBoardBlocked = false;
+                                 }
+                              }
+                              if (isBoardBlocked)
+                              {
+                                 if (j > 1 && this->gemGrid[i][j - 2]->getID() == this->gemGrid[i][j]->getID())
+                                 {
+                                    if (i > 0 && this->gemGrid[i - 1][j - 1]->getID() == this->gemGrid[i][j]->getID())
+                                    {
+                                       isBoardBlocked = false;
+                                    }
+                                    else if (i < this->size - 1 && this->gemGrid[i + 1][j - 1]->getID() == this->gemGrid[i][j]->getID())
+                                    {
+                                       isBoardBlocked = false;
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
       if (isBoardBlocked)
       {
          this->resetBoard();
