@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Window::Window()
-       : renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), mainBoard(9)
+       : renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), mainBoard(9), playerName("Unknown")
    {
       if (!this->bgTex.loadFromFile("../assets/bg_image.png"))
       {
@@ -16,9 +16,15 @@ namespace gc_game
       this->mainBoard.getTransformable().setPosition(42.f, 137.f);
    }
 
-   Window &Window::getHandler()
+   void Window::setPlayerName(const std::string &pn)
+   {
+      this->playerName = pn;
+   }
+
+   Window &Window::getHandler(const std::string &pn)
    {
       static Window win;
+      win.setPlayerName(pn);
       return win;
    }
 
