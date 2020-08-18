@@ -58,10 +58,10 @@ namespace gc_game
 
    public:
       Board(unsigned);
-      Board(const Board &) = delete;
       Board(Board &&) = delete;
-      Board &operator=(const Board &) = delete;
+      Board(const Board &) = delete;
       Board &operator=(Board &&) = delete;
+      Board &operator=(const Board &) = delete;
 
       sf::Transformable &getTransformable();
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;

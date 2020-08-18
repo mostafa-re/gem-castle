@@ -3,4 +3,9 @@
 namespace gc_game
 {
    YellowGem::YellowGem() : Gem("../assets/yellow_gem.png", 6, 10) {}
+
+   void YellowGem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+   {
+      target.draw(this->spr, states);
+   }
 } // namespace gc_game

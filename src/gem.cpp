@@ -14,11 +14,6 @@ namespace gc_game
       this->spr.setTexture(this->sourceTex);
    }
 
-   void Gem::draw(sf::RenderTarget &target, sf::RenderStates states) const
-   {
-      target.draw(this->spr, states);
-   }
-
    sf::Transformable &Gem::getTransformable()
    {
       return this->spr;

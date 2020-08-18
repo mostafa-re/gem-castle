@@ -9,6 +9,11 @@ namespace gc_game
    {
    public:
       explicit GreenGem();
+      GreenGem(GreenGem &&) = delete;
+      GreenGem(const GreenGem &) = delete;
+      GreenGem &operator=(GreenGem &&) = delete;
+      GreenGem &operator=(const GreenGem &) = delete;
+      virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
    };
 } // namespace gc_game
 

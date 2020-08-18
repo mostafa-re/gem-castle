@@ -3,4 +3,9 @@
 namespace gc_game
 {
    BlueGem::BlueGem() : Gem("../assets/blue_gem.png", 2, 10) {}
+
+   void BlueGem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+   {
+      target.draw(this->spr, states);
+   }
 } // namespace gc_game
