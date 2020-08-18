@@ -6,6 +6,6 @@ namespace gc_game
 
    void BlackGem::draw(sf::RenderTarget &target, sf::RenderStates states) const
    {
-      target.draw(this->spr, states);
+      target.draw(this->sourceSpr, states);
    }
 } // namespace gc_game

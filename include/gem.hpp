@@ -20,10 +20,10 @@ namespace gc_game
    {
    protected:
       unsigned short id;
-      GemStatus currentGemStatus;
+      GemStatus currentStatus;
       sf::Vector2f position;
       sf::Texture sourceTex;
-      sf::Sprite spr;
+      sf::Sprite sourceSpr;
       size_t point;
 
    public:
