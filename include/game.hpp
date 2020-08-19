@@ -19,6 +19,7 @@ namespace gc_game
       Board mainBoard;
       u_int64_t score;
       char playerName[MAX_PLAYER_NAME];
+      std::chrono::system_clock::time_point timerStart;
       sf::RenderWindow renderWin;
       sf::Text playerNameTxt;
       sf::Text scoreTxt;
@@ -27,7 +28,6 @@ namespace gc_game
       sf::Texture bgTex;
       sf::Sprite bgSpr;
       sf::Font font;
-      std::chrono::system_clock::time_point timerStart;
 
       explicit Game();
       Game(Game &&) = delete;

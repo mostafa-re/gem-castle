@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Game::Game()
-       : mainBoard(9), score(0), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), timerStart(std::chrono::system_clock::now())
+       : mainBoard(9), score(0), timerStart(std::chrono::system_clock::now()), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close)
    {
       if (!this->bgTex.loadFromFile("../assets/bg_image.png") ||
           !this->font.loadFromFile("../assets/default_font.ttf"))
@@ -68,7 +68,7 @@ namespace gc_game
          this->playerName[17] = this->playerName[18] = this->playerName[19] = '.';
          this->playerName[20] = '\0';
       }
-      this->playerNameTxt.setString("player: " + std::to_string(this->playerName));
+      this->playerNameTxt.setString("player: " + std::string(this->playerName));
    }
 
    Game &Game::getHandler()
