@@ -25,9 +25,15 @@ namespace gc_game
       sf::Text scoreTxt;
       sf::Text timerTxt;
       sf::Text comboTxt;
-      sf::Texture bgTex;
-      sf::Sprite bgSpr;
       sf::Font font;
+      sf::Texture redResumeBottunTex;
+      sf::Texture resumeBottunTex;
+      sf::Texture pauseBottunTex;
+      sf::Texture resetButtonTex;
+      sf::Texture bgTex;
+      sf::Sprite resumeOrPauseButtonSpr;
+      sf::Sprite resetBottunSpr;
+      sf::Sprite bgSpr;
 
       explicit Game();
       Game(Game &&) = delete;

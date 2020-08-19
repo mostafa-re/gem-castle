@@ -5,17 +5,35 @@ namespace gc_game
    Game::Game()
        : mainBoard(9), score(0), timerStart(std::chrono::system_clock::now()), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close)
    {
-      if (!this->bgTex.loadFromFile("../assets/bg_image.png") ||
-          !this->font.loadFromFile("../assets/default_font.ttf"))
+      if (!this->font.loadFromFile("../assets/default_font.ttf") ||
+          !this->redResumeBottunTex.loadFromFile("../assets/red_resume_button.png") ||
+          !this->resumeBottunTex.loadFromFile("../assets/resume_button.png") ||
+          !this->pauseBottunTex.loadFromFile("../assets/pause_button.png") ||
+          !this->resetButtonTex.loadFromFile("../assets/reset_button.png") ||
+          !this->bgTex.loadFromFile("../assets/bg_image.png"))
       {
          throw std::runtime_error("Unable to open asset files!");
       }
-      this->bgTex.setSmooth(true);
-      this->bgTex.setRepeated(false);
-      this->bgSpr.setTexture(this->bgTex);
-
       this->renderWin.setFramerateLimit(60);
       this->mainBoard.getTransformable().setPosition(42.f, 137.f);
+
+      this->redResumeBottunTex.setSmooth(true);
+      this->redResumeBottunTex.setRepeated(false);
+      this->resumeBottunTex.setSmooth(true);
+      this->resumeBottunTex.setRepeated(false);
+      this->pauseBottunTex.setSmooth(true);
+      this->pauseBottunTex.setRepeated(false);
+      this->resetButtonTex.setSmooth(true);
+      this->resetButtonTex.setRepeated(false);
+      this->bgTex.setSmooth(true);
+      this->bgTex.setRepeated(false);
+
+      this->resumeOrPauseButtonSpr.setTexture(this->pauseBottunTex);
+      this->resetBottunSpr.setTexture(this->resetButtonTex);
+      this->bgSpr.setTexture(this->bgTex);
+
+      this->resumeOrPauseButtonSpr.setPosition(526, 14);
+      this->resetBottunSpr.setPosition(476, 15);
 
       this->setPlayerName("Unknown");
       this->playerNameTxt.setPosition(65, 65);
@@ -113,15 +131,17 @@ namespace gc_game
                this->mainBoard.mouseClick(event.mouseButton);
             }
          }
+         this->updateTimer();
+         this->updateScore();
          this->renderWin.clear(sf::Color::White);
          this->renderWin.draw(this->bgSpr);
-         this->renderWin.draw(this->mainBoard);
-         this->renderWin.draw(this->playerNameTxt);
-         this->updateTimer();
          this->renderWin.draw(this->timerTxt);
-         this->updateScore();
          this->renderWin.draw(this->scoreTxt);
          this->renderWin.draw(this->comboTxt);
+         this->renderWin.draw(this->mainBoard);
+         this->renderWin.draw(this->playerNameTxt);
+         this->renderWin.draw(this->resetBottunSpr);
+         this->renderWin.draw(this->resumeOrPauseButtonSpr);
          this->renderWin.display();
       }
    }
