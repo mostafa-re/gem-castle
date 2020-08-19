@@ -3,13 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
+#include <fstream>
+#include <iomanip>
+#include <thread>
 #include <string>
 #include <ctime>
 #include <cmath>
 #include "board.hpp"
 
 #define MAX_PLAYER_NAME 20
-#define MAX_TIMER_STRING 10
 
 namespace gc_game
 {
@@ -46,6 +48,7 @@ namespace gc_game
       //assist func
       void updateScore();
       void updateTimer();
+      void savePlayerResult();
 
    public:
       void setPlayerName(const std::string &);

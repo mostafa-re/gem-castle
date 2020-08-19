@@ -86,9 +86,53 @@ namespace gc_game
    void Game::updateTimer()
    {
       time_t diffTime = time(nullptr) - this->timerStart;
-      char timeStr[MAX_TIMER_STRING];
+      char timeStr[10];
       strftime(timeStr, sizeof timeStr, "%H:%M:%S", std::gmtime(&diffTime));
       this->timerTxt.setString(timeStr);
+   }
+
+   void Game::savePlayerResult()
+   {
+      std::string screenLog{"-> logging Progress of saving player score results into file...\n"};
+      std::fstream logFile("player_scores.log", std::ios::in | std::ios::out);
+      if (!logFile)
+      {
+         screenLog += "-> logfile doesn't exist.\n-> creating logfile...\n";
+         logFile.open("player_scores.log", std::ios::out);
+         if (!logFile)
+         {
+            screenLog += "-> unable to create, may that logfile is READ-ONLY.\n-> failed to save the score results :(";
+         }
+         else
+         {
+            screenLog += "-> writing headers into logfile...\n";
+            logFile << "PLAYER_NAME          SCORE            TIME\n"
+                    << std::string(60, '=') << '\n';
+         }
+      }
+      if (logFile)
+      {
+         char timeString[128];
+         time_t t = time(nullptr);
+         strftime(timeString, sizeof timeString, "%d/%m/%Y %H:%M:%S", localtime(&t));
+         logFile.seekp(0, std::ios::end);
+         logFile << std::left << std::setw(20) << this->playerName << ' ' << std::setw(18) << std::to_string(this->score) << ' ' << std::setw(20) << timeString << '\n';
+         screenLog += "-> " + std::string(this->playerName) + " | " + std::to_string(this->score) + " | " + timeString + '\n';
+         screenLog += "DONE.\n";
+      }
+
+      sf::RectangleShape messageBox(sf::Vector2f(this->renderWin.getSize()));
+      messageBox.setFillColor(sf::Color(255, 255, 255, 234));
+      sf::Text screenLogTxt;
+      screenLogTxt.setString(screenLog);
+      screenLogTxt.setPosition(70, 170);
+      screenLogTxt.setFont(this->font);
+      screenLogTxt.setCharacterSize(16);
+      screenLogTxt.setFillColor(sf::Color(0, 0, 0));
+      this->renderWin.draw(messageBox);
+      this->renderWin.draw(screenLogTxt);
+      this->renderWin.display();
+      std::this_thread::sleep_for(std::chrono::seconds(4));
    }
 
    void Game::setPlayerName(const std::string &pn)
@@ -161,6 +205,7 @@ namespace gc_game
             }
             else if (event.type == sf::Event::Closed)
             {
+               this->savePlayerResult();
                this->renderWin.close();
             }
          }
