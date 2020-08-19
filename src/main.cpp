@@ -10,5 +10,6 @@ int main()
    gethostname(hostname, HOST_NAME_MAX);
    getlogin_r(username, LOGIN_NAME_MAX);
    std::string playerName = std::string(username) + '@' + std::string(hostname);
-   gc_game::Window::getHandler(playerName).run();
+   gc_game::Window::getHandler().setPlayerName(playerName);
+   gc_game::Window::getHandler().run();
 }
