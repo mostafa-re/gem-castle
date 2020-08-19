@@ -68,6 +68,8 @@ namespace gc_game
       virtual ~Board() override;
 
       void reset();
+      bool getPoint(size_t &);
+      bool getComboIndicator(size_t &);
       void mouseClick(const sf::Event::MouseButtonEvent &);
    };
 } // namespace gc_game

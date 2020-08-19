@@ -72,6 +72,28 @@ namespace gc_game
       this->renderSleep = false;
    }
 
+   bool Board::getPoint(size_t &p)
+   {
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(1));
+      if (lock)
+      {
+         p = this->point;
+         return true;
+      }
+      return false;
+   }
+
+   bool Board::getComboIndicator(size_t &ci)
+   {
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(1));
+      if (lock)
+      {
+         ci = this->comboIndicator;
+         return true;
+      }
+      return false;
+   }
+
    void Board::mouseClick(const sf::Event::MouseButtonEvent &mouseButton)
    {
       std::lock_guard<std::timed_mutex> lock(this->renderMutex);
