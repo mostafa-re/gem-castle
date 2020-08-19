@@ -1,5 +1,5 @@
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
@@ -8,14 +8,17 @@
 #include <cmath>
 #include "board.hpp"
 
+#define MAX_PLAYER_NAME 20
+#define MAX_TIMER_STRING 10
+
 namespace gc_game
 {
-   class Window
+   class Game
    {
    private:
       Board mainBoard;
-      u_int16_t score;
-      std::string playerName;
+      u_int64_t score;
+      char playerName[MAX_PLAYER_NAME];
       sf::RenderWindow renderWin;
       sf::Text playerNameTxt;
       sf::Text scoreTxt;
@@ -26,11 +29,11 @@ namespace gc_game
       sf::Font font;
       std::chrono::system_clock::time_point timerStart;
 
-      explicit Window();
-      Window(Window &&) = delete;
-      Window(const Window &) = delete;
-      Window &operator=(Window &&) = delete;
-      Window &operator=(const Window &) = delete;
+      explicit Game();
+      Game(Game &&) = delete;
+      Game(const Game &) = delete;
+      Game &operator=(Game &&) = delete;
+      Game &operator=(const Game &) = delete;
 
       //assist func
       void updateScore();
@@ -38,9 +41,9 @@ namespace gc_game
 
    public:
       void setPlayerName(const std::string &);
-      static Window &getHandler();
+      static Game &getHandler();
       void run();
    };
 } // namespace gc_game
 
-#endif // WINDOW_HPP
+#endif // GAME_HPP

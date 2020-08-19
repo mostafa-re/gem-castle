@@ -1,9 +1,9 @@
-#include "window.hpp"
+#include "game.hpp"
 
 namespace gc_game
 {
-   Window::Window()
-       : mainBoard(9), score(0), playerName("Unknown"), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), timerStart(std::chrono::system_clock::now())
+   Game::Game()
+       : mainBoard(9), score(0), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), timerStart(std::chrono::system_clock::now())
    {
       if (!this->bgTex.loadFromFile("../assets/bg_image.png") ||
           !this->font.loadFromFile("../assets/default_font.ttf"))
@@ -17,7 +17,7 @@ namespace gc_game
       this->renderWin.setFramerateLimit(60);
       this->mainBoard.getTransformable().setPosition(42.f, 137.f);
 
-      this->playerNameTxt.setString("player: " + this->playerName);
+      this->setPlayerName("Unknown");
       this->playerNameTxt.setPosition(65, 65);
       this->playerNameTxt.setFont(this->font);
       this->playerNameTxt.setCharacterSize(22);
@@ -42,36 +42,42 @@ namespace gc_game
       this->comboTxt.setFillColor(sf::Color{0, 0, 0});
    }
 
-   void Window::updateScore() {}
+   void Game::updateScore()
+   {
+   }
 
-   void Window::updateTimer()
+   void Game::updateTimer()
    {
       time_t diffTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - std::chrono::system_clock::to_time_t(this->timerStart);
-      char timeStr[32];
-      strftime(timeStr, 32, "%H:%M:%S", std::gmtime(&diffTime));
+      char timeStr[MAX_TIMER_STRING];
+      strftime(timeStr, sizeof timeStr, "%H:%M:%S", std::gmtime(&diffTime));
       this->timerTxt.setString(timeStr);
    }
 
-   void Window::setPlayerName(const std::string &pn)
+   void Game::setPlayerName(const std::string &pn)
    {
-      this->playerName = pn;
-      if (this->playerName.size() <= 20)
+      size_t charSize = pn.size();
+      if (charSize <= MAX_PLAYER_NAME)
       {
-         this->playerNameTxt.setString("player: " + this->playerName);
+         pn.copy(this->playerName, charSize, 0);
+         this->playerName[charSize] = '\0';
       }
       else
       {
-         this->playerNameTxt.setString("player: " + this->playerName.substr(0, 17) + "...");
+         pn.copy(this->playerName, 17, 0);
+         this->playerName[17] = this->playerName[18] = this->playerName[19] = '.';
+         this->playerName[20] = '\0';
       }
+      this->playerNameTxt.setString("player: " + std::to_string(this->playerName));
    }
 
-   Window &Window::getHandler()
+   Game &Game::getHandler()
    {
-      static Window win;
+      static Game win;
       return win;
    }
 
-   void Window::run()
+   void Game::run()
    {
       this->renderWin.requestFocus();
       sf::Event event;

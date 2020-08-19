@@ -1,7 +1,7 @@
 #include <string>
 #include <climits>
 #include <unistd.h>
-#include "window.hpp"
+#include "game.hpp"
 
 int main()
 {
@@ -10,6 +10,6 @@ int main()
    gethostname(hostname, HOST_NAME_MAX);
    getlogin_r(username, LOGIN_NAME_MAX);
    std::string playerName = std::string(username) + '@' + std::string(hostname);
-   gc_game::Window::getHandler().setPlayerName(playerName);
-   gc_game::Window::getHandler().run();
+   gc_game::Game::getHandler().setPlayerName(playerName);
+   gc_game::Game::getHandler().run();
 }
