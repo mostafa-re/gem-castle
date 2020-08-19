@@ -44,6 +44,25 @@ namespace gc_game
 
    void Game::updateScore()
    {
+      size_t point;
+      size_t comboIndicator;
+      if (this->mainBoard.getPoint(point))
+      {
+         this->score = point;
+         this->scoreTxt.setString("score: " + std::to_string(this->score));
+      }
+      if (this->mainBoard.getComboIndicator(comboIndicator))
+      {
+         if (comboIndicator)
+         {
+            this->comboTxt.setString(std::to_string(static_cast<unsigned long>(powl(2, comboIndicator))) + "X Comb" + std::string(comboIndicator, 'o'));
+            this->comboTxt.setPosition(473 + this->timerTxt.getLocalBounds().width - this->comboTxt.getLocalBounds().width, 95);
+         }
+         else
+         {
+            this->comboTxt.setString("");
+         }
+      }
    }
 
    void Game::updateTimer()

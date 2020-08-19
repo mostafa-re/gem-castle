@@ -95,7 +95,14 @@ namespace gc_game
       std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(1));
       if (lock)
       {
-         ci = this->comboIndicator;
+         if (this->comboIndicator)
+         {
+            ci = this->comboIndicator - 1;
+         }
+         else
+         {
+            ci = 0;
+         }
          return true;
       }
       return false;
@@ -499,7 +506,6 @@ namespace gc_game
                      break;
                   }
                   this->point += powl(2, this->comboIndicator) * tempPoint;
-                  this->comboIndicator++;
                }
             }
             if (j > 1 && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j - 2]->getID() && this->gemGrid[i][j - 1]->getID() == this->gemGrid[i][j]->getID())
@@ -578,10 +584,17 @@ namespace gc_game
                      break;
                   }
                   this->point += powl(2, this->comboIndicator) * tempPoint;
-                  this->comboIndicator++;
                }
             }
          }
+      }
+      if (haveNewResult)
+      {
+         this->comboIndicator++;
+      }
+      else
+      {
+         this->comboIndicator = 0;
       }
       return haveNewResult;
    }
@@ -952,13 +965,9 @@ namespace gc_game
                {
                   this->clearClickedGem();
                }
-               else
+               else if (!this->boardCheckBlock())
                {
-                  this->comboIndicator = 0;
-                  if (!this->boardCheckBlock())
-                  {
-                     this->renderSleep = true;
-                  }
+                  this->renderSleep = true;
                }
             }
             if (this->clickedGem)
