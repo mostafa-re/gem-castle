@@ -12,11 +12,17 @@ namespace gc_game
    class Window
    {
    private:
-      sf::RenderWindow renderWin;
       Board mainBoard;
+      u_int16_t score;
+      std::string playerName;
+      sf::RenderWindow renderWin;
+      sf::Text playerNameTxt;
+      sf::Text scoreTxt;
+      sf::Text timerTxt;
+      sf::Text comboTxt;
       sf::Texture bgTex;
       sf::Sprite bgSpr;
-      std::string playerName;
+      sf::Font font;
 
       explicit Window();
       Window(Window &&) = delete;
@@ -24,10 +30,9 @@ namespace gc_game
       Window &operator=(Window &&) = delete;
       Window &operator=(const Window &) = delete;
 
-      void setPlayerName(const std::string &);
-
    public:
-      static Window &getHandler(const std::string &);
+      void setPlayerName(const std::string &);
+      static Window &getHandler();
       void run();
    };
 } // namespace gc_game
