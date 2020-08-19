@@ -21,12 +21,12 @@ namespace gc_game
 
       this->gemBoxTex.setSmooth(true);
       this->gemBoxTex.setRepeated(false);
-      this->gemBoxSpr.setTexture(this->gemBoxTex);
       this->clickTex.setSmooth(true);
       this->clickTex.setRepeated(false);
-      this->clickSpr.setTexture(this->clickTex);
       this->swapTex.setSmooth(true);
       this->swapTex.setRepeated(false);
+      this->gemBoxSpr.setTexture(this->gemBoxTex);
+      this->clickSpr.setTexture(this->clickTex);
       this->swapSpr.setTexture(this->swapTex);
 
       for (size_t i = 0; i < this->size; i++)
