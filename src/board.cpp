@@ -34,8 +34,11 @@ namespace gc_game
          this->gemGrid.emplace_back(this->size);
       }
       this->gemGrid.shrink_to_fit();
+      this->point = 0;
+      this->refreshBoard();
+      this->clearClickedGem();
+      this->renderSleep = false;
       this->renderThread = std::thread(&Board::render, this);
-      this->reset();
    }
 
    sf::Transformable &Board::getTransformable()
@@ -63,13 +66,17 @@ namespace gc_game
       this->renderThread.join();
    }
 
-   void Board::reset()
+   bool Board::reset()
    {
-      std::lock_guard<std::timed_mutex> lock(this->renderMutex);
-      this->point = 0;
-      this->refreshBoard();
-      this->clearClickedGem();
-      this->renderSleep = false;
+      std::unique_lock<std::timed_mutex> lock(this->renderMutex, std::chrono::microseconds(1));
+      if (lock)
+      {
+         this->point = 0;
+         this->refreshBoard();
+         this->renderSleep = false;
+         return true;
+      }
+      return false;
    }
 
    bool Board::getPoint(size_t &p)

@@ -67,7 +67,7 @@ namespace gc_game
       virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
       virtual ~Board() override;
 
-      void reset();
+      bool reset();
       bool getPoint(size_t &);
       bool getComboIndicator(size_t &);
       void mouseClick(const sf::Event::MouseButtonEvent &);
