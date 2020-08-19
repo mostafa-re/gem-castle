@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
 #include <string>
-#include <chrono>
+#include <ctime>
 #include <cmath>
 #include "board.hpp"
 
@@ -19,7 +19,9 @@ namespace gc_game
       Board mainBoard;
       u_int64_t score;
       char playerName[MAX_PLAYER_NAME];
-      std::chrono::system_clock::time_point timerStart;
+      time_t timerStart;
+      bool isPause;
+
       sf::RenderWindow renderWin;
       sf::Text playerNameTxt;
       sf::Text scoreTxt;

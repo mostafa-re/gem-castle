@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Game::Game()
-       : mainBoard(9), score(0), timerStart(std::chrono::system_clock::now()), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close)
+       : mainBoard(9), score(0), timerStart(time(nullptr)), isPause(false), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close)
    {
       if (!this->font.loadFromFile("../assets/default_font.ttf") ||
           !this->redResumeBottunTex.loadFromFile("../assets/red_resume_button.png") ||
@@ -33,7 +33,7 @@ namespace gc_game
       this->bgSpr.setTexture(this->bgTex);
 
       this->resumeOrPauseButtonSpr.setPosition(526, 14);
-      this->resetBottunSpr.setPosition(476, 15);
+      this->resetBottunSpr.setPosition(479, 15);
 
       this->setPlayerName("Unknown");
       this->playerNameTxt.setPosition(65, 65);
@@ -85,7 +85,7 @@ namespace gc_game
 
    void Game::updateTimer()
    {
-      time_t diffTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - std::chrono::system_clock::to_time_t(this->timerStart);
+      time_t diffTime = time(nullptr) - this->timerStart;
       char timeStr[MAX_TIMER_STRING];
       strftime(timeStr, sizeof timeStr, "%H:%M:%S", std::gmtime(&diffTime));
       this->timerTxt.setString(timeStr);
@@ -116,23 +116,60 @@ namespace gc_game
 
    void Game::run()
    {
+      time_t pauseStart = {this->timerStart};
       this->renderWin.requestFocus();
       sf::Event event;
       while (this->renderWin.isOpen())
       {
          while (this->renderWin.pollEvent(event))
          {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+               if (this->resumeOrPauseButtonSpr.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+               {
+                  if (this->isPause)
+                  {
+                     this->isPause = false;
+                     this->timerStart += time(nullptr) - pauseStart;
+                     this->resumeOrPauseButtonSpr.setTexture(this->pauseBottunTex);
+                  }
+                  else
+                  {
+                     this->isPause = true;
+                     pauseStart = time(nullptr);
+                     this->resumeOrPauseButtonSpr.setTexture(this->resumeBottunTex);
+                  }
+               }
+               else if (this->resetBottunSpr.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+               {
+                  while (!this->mainBoard.reset())
+                     ;
+               }
+               else if (!this->isPause)
+               {
+                  this->mainBoard.mouseClick(event.mouseButton);
+               }
+            }
+            else if (event.type == sf::Event::LostFocus)
+            {
+               if (!this->isPause)
+               {
+                  this->isPause = true;
+                  pauseStart = time(nullptr);
+                  this->resumeOrPauseButtonSpr.setTexture(this->redResumeBottunTex);
+               }
+            }
+            else if (event.type == sf::Event::Closed)
             {
                this->renderWin.close();
             }
-            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            {
-               this->mainBoard.mouseClick(event.mouseButton);
-            }
          }
-         this->updateTimer();
+
          this->updateScore();
+         if (!isPause)
+         {
+            this->updateTimer();
+         }
          this->renderWin.clear(sf::Color::White);
          this->renderWin.draw(this->bgSpr);
          this->renderWin.draw(this->timerTxt);
