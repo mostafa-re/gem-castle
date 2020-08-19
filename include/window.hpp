@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
 #include <string>
+#include <chrono>
 #include <cmath>
 #include "board.hpp"
 
@@ -23,12 +24,17 @@ namespace gc_game
       sf::Texture bgTex;
       sf::Sprite bgSpr;
       sf::Font font;
+      std::chrono::system_clock::time_point timerStart;
 
       explicit Window();
       Window(Window &&) = delete;
       Window(const Window &) = delete;
       Window &operator=(Window &&) = delete;
       Window &operator=(const Window &) = delete;
+
+      //assist func
+      void updateScore();
+      void updateTimer();
 
    public:
       void setPlayerName(const std::string &);

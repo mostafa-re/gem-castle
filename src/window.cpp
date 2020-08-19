@@ -3,7 +3,7 @@
 namespace gc_game
 {
    Window::Window()
-       : mainBoard(9), score(0), playerName("Unknown"), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close)
+       : mainBoard(9), score(0), playerName("Unknown"), renderWin(sf::VideoMode(581, 681), "| Gem Castle |", sf::Style::Close), timerStart(std::chrono::system_clock::now())
    {
       if (!this->bgTex.loadFromFile("../assets/bg_image.png") ||
           !this->font.loadFromFile("../assets/default_font.ttf"))
@@ -28,6 +28,28 @@ namespace gc_game
       this->scoreTxt.setFont(this->font);
       this->scoreTxt.setCharacterSize(22);
       this->scoreTxt.setFillColor(sf::Color{127, 127, 127});
+
+      this->timerTxt.setString("00:00:00");
+      this->timerTxt.setPosition(475, 65);
+      this->timerTxt.setFont(this->font);
+      this->timerTxt.setCharacterSize(22);
+      this->timerTxt.setFillColor(sf::Color{0, 0, 0});
+
+      this->comboTxt.setString("");
+      this->comboTxt.setPosition(475, 95);
+      this->comboTxt.setFont(this->font);
+      this->comboTxt.setCharacterSize(22);
+      this->comboTxt.setFillColor(sf::Color{0, 0, 0});
+   }
+
+   void Window::updateScore() {}
+
+   void Window::updateTimer()
+   {
+      time_t diffTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - std::chrono::system_clock::to_time_t(this->timerStart);
+      char timeStr[32];
+      strftime(timeStr, 32, "%H:%M:%S", std::gmtime(&diffTime));
+      this->timerTxt.setString(timeStr);
    }
 
    void Window::setPlayerName(const std::string &pn)
@@ -70,7 +92,11 @@ namespace gc_game
          this->renderWin.draw(this->bgSpr);
          this->renderWin.draw(this->mainBoard);
          this->renderWin.draw(this->playerNameTxt);
+         this->updateTimer();
+         this->renderWin.draw(this->timerTxt);
+         this->updateScore();
          this->renderWin.draw(this->scoreTxt);
+         this->renderWin.draw(this->comboTxt);
          this->renderWin.display();
       }
    }
