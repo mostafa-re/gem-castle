@@ -93,19 +93,19 @@ namespace gc_game
 
    void Game::savePlayerResult()
    {
-      std::string screenLog{"-> logging Progress of saving player score results into file...\n"};
+      std::string screenLog{"=> logging Progress of saving player score results into file...\n"};
       std::fstream logFile("player_scores.log", std::ios::in | std::ios::out);
       if (!logFile)
       {
-         screenLog += "-> logfile doesn't exist.\n-> creating logfile...\n";
+         screenLog += "=> logfile doesn't exist.\n=> creating logfile...\n";
          logFile.open("player_scores.log", std::ios::out);
          if (!logFile)
          {
-            screenLog += "-> unable to create, may that logfile is READ-ONLY.\n-> failed to save the score results :(";
+            screenLog += "=> unable to create, may that logfile is READ-ONLY.\n=> failed to save the score results :(";
          }
          else
          {
-            screenLog += "-> writing headers into logfile...\n";
+            screenLog += "=> writing headers into logfile...\n";
             logFile << "PLAYER_NAME          SCORE            TIME\n"
                     << std::string(60, '=') << '\n';
          }
@@ -117,7 +117,7 @@ namespace gc_game
          strftime(timeString, sizeof timeString, "%d/%m/%Y %H:%M:%S", localtime(&t));
          logFile.seekp(0, std::ios::end);
          logFile << std::left << std::setw(20) << this->playerName << ' ' << std::setw(18) << std::to_string(this->score) << ' ' << std::setw(20) << timeString << '\n';
-         screenLog += "-> " + std::string(this->playerName) + " | " + std::to_string(this->score) + " | " + timeString + '\n';
+         screenLog += "=> " + std::string(this->playerName) + " | " + std::to_string(this->score) + " | " + timeString + '\n';
          screenLog += "DONE.\n";
       }
 

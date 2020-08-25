@@ -19,14 +19,14 @@ int main()
    }
    catch (std::exception &ex)
    {
-      std::cerr << "-> Ooh, an fatal error leads the program to be terminated :(\n"
-                << "-> Here is the ERR_COMMET:\n"
+      std::cerr << "-> Sorry, an fatal error leads the program to be terminated :(\n"
+                << "-> Here is the ERR_COMMET:\n=> "
                 << ex.what() << '\n';
       exit(EXIT_FAILURE);
    }
    catch (...)
    {
-      std::cerr << "-> Sorry, an UNKNOWN fatal error leads the program to be terminated :/\n"
+      std::cerr << "-> Ooh, an UNKNOWN fatal error leads the program to be terminated :/\n"
                 << "-> No ERR_COMMET availbale!\n";
       exit(EXIT_FAILURE);
    }
