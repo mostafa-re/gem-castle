@@ -9,8 +9,8 @@ namespace gc_game
          throw std::invalid_argument("Board size is too small");
       }
       if (!this->gemBoxTex.loadFromFile("../assets/gembox.png") ||
-          !this->clickTex.loadFromFile("../assets/click.png") ||
-          !this->swapTex.loadFromFile("../assets/swap.png"))
+          !this->MouseClickTex.loadFromFile("../assets/click.png") ||
+          !this->mouseHoverTex.loadFromFile("../assets/swap.png"))
       {
          throw std::runtime_error("Unable to open asset files!");
       }
@@ -21,13 +21,13 @@ namespace gc_game
 
       this->gemBoxTex.setSmooth(true);
       this->gemBoxTex.setRepeated(false);
-      this->clickTex.setSmooth(true);
-      this->clickTex.setRepeated(false);
-      this->swapTex.setSmooth(true);
-      this->swapTex.setRepeated(false);
+      this->MouseClickTex.setSmooth(true);
+      this->MouseClickTex.setRepeated(false);
+      this->mouseHoverTex.setSmooth(true);
+      this->mouseHoverTex.setRepeated(false);
       this->gemBoxSpr.setTexture(this->gemBoxTex);
-      this->clickSpr.setTexture(this->clickTex);
-      this->swapSpr.setTexture(this->swapTex);
+      this->mouseClickSpr.setTexture(this->MouseClickTex);
+      this->mouseHoverSpr.setTexture(this->mouseHoverTex);
 
       for (size_t i = 0; i < this->size; i++)
       {
@@ -124,10 +124,10 @@ namespace gc_game
          {
             if (this->swapGems(this->clickedGem, justClickedGem))
             {
-               this->swapSpr.setPosition(this->clickedGem->getTransformable().getPosition());
-               this->boardTex.draw(this->swapSpr);
-               this->swapSpr.setPosition(justClickedGem->getTransformable().getPosition());
-               this->boardTex.draw(this->swapSpr);
+               this->mouseHoverSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+               this->boardTex.draw(this->mouseHoverSpr);
+               this->mouseHoverSpr.setPosition(justClickedGem->getTransformable().getPosition());
+               this->boardTex.draw(this->mouseHoverSpr);
             }
             else
             {
@@ -137,8 +137,8 @@ namespace gc_game
          else
          {
             this->clickedGem = justClickedGem;
-            this->clickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
-            this->boardTex.draw(this->clickSpr);
+            this->mouseClickSpr.setPosition(this->clickedGem->getTransformable().getPosition());
+            this->boardTex.draw(this->mouseClickSpr);
          }
       }
       else
@@ -411,7 +411,7 @@ namespace gc_game
    {
       if (this->clickedGem)
       {
-         this->clickSpr.setPosition(0, -55);
+         this->mouseClickSpr.setPosition(0, -55);
          this->clickedGem = nullptr;
       }
    }
@@ -599,7 +599,7 @@ namespace gc_game
       return haveNewResult;
    }
 
-   bool Board::boardCheckBlock()
+   bool Board::boardBlockedCheck()
    {
       bool isBoardBlocked = {true};
 
@@ -933,9 +933,9 @@ namespace gc_game
                      break;
 
                   case GemStatus::SWAP:
-                     this->swapSpr.setPosition(item->getTransformable().getPosition());
+                     this->mouseHoverSpr.setPosition(item->getTransformable().getPosition());
                      this->moveGems(*item, moveFactorOfGems);
-                     this->boardTex.draw(this->swapSpr);
+                     this->boardTex.draw(this->mouseHoverSpr);
                      this->boardTex.draw(*item);
                      haveAnimation = true;
                      break;
@@ -965,7 +965,7 @@ namespace gc_game
                {
                   this->clearClickedGem();
                }
-               else if (!this->boardCheckBlock())
+               else if (!this->boardBlockedCheck())
                {
                   this->renderSleep = true;
                }
@@ -978,7 +978,7 @@ namespace gc_game
                }
                else
                {
-                  this->boardTex.draw(this->clickSpr);
+                  this->boardTex.draw(this->mouseClickSpr);
                }
             }
          }

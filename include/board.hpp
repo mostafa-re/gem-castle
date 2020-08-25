@@ -24,11 +24,11 @@ namespace gc_game
    private:
       unsigned size;
       sf::Texture gemBoxTex;
-      sf::Texture clickTex;
-      sf::Texture swapTex;
+      sf::Texture MouseClickTex;
+      sf::Texture mouseHoverTex;
       sf::Sprite gemBoxSpr;
-      sf::Sprite clickSpr;
-      sf::Sprite swapSpr;
+      sf::Sprite mouseClickSpr;
+      sf::Sprite mouseHoverSpr;
       mutable sf::Sprite boardSpr;
 
       // thread based vars
@@ -41,8 +41,8 @@ namespace gc_game
       // thread utils
       std::thread renderThread;
       mutable std::timed_mutex renderMutex;
-      bool renderDone;
       bool renderSleep;
+      bool renderDone;
       void render();
 
       // non lock -- assistant funcs
@@ -51,7 +51,7 @@ namespace gc_game
       void refreshBoard();
       void clearClickedGem();
       bool boardEvaluation();
-      bool boardCheckBlock();
+      bool boardBlockedCheck();
       void moveGems(Gem &, const float &);
       void fadeoutGems(Gem &, const float &);
       bool swapGems(std::shared_ptr<Gem>, std::shared_ptr<Gem>);
