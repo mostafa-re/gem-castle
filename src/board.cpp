@@ -2,7 +2,7 @@
 
 namespace gc_game
 {
-   Board::Board(unsigned size) : size(size), renderDone(false), renderSleep(true)
+   Board::Board(unsigned size) : size(size), renderSleep(true), renderDone(false)
    {
       if (this->size < 5)
       {
@@ -14,7 +14,7 @@ namespace gc_game
       {
          throw std::runtime_error("Unable to open asset files!");
       }
-      if (!this->boardTex.create((this->size * 55) + 2, (this->size * 55) + 3))
+      if (!this->boardTex.create((this->size * 55) + 2, (this->size * 55) + 2))
       {
          throw std::runtime_error("unable to create textureRender of board!");
       }
@@ -153,14 +153,15 @@ namespace gc_game
       this->boardTex.clear(sf::Color(0, 0, 0, 0));
       sf::VertexArray border(sf::Lines, 2);
       border[0].color = border[1].color = sf::Color(149, 149, 149, 255);
-      border[0].position = (sf::Vector2f(2.f, 1.f));
-      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55), 1.f));
+
+      border[0].position = (sf::Vector2f(2.f, 0.f));
+      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55), 0.f));
       this->boardTex.draw(border);
       border[0].position = (sf::Vector2f(static_cast<float>(this->size * 55) + 2, 2.f));
       border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55) + 2, static_cast<float>(this->size * 55) - 1));
       this->boardTex.draw(border);
-      border[0].position = (sf::Vector2f(2.f, static_cast<float>(this->size * 55) + 2));
-      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55) - 1, static_cast<float>(this->size * 55) + 2));
+      border[0].position = (sf::Vector2f(2.f, static_cast<float>(this->size * 55) + 1));
+      border[1].position = (sf::Vector2f(static_cast<float>(this->size * 55) - 1, static_cast<float>(this->size * 55) + 1));
       this->boardTex.draw(border);
       border[0].position = (sf::Vector2f(1.f, 2.f));
       border[1].position = (sf::Vector2f(1.f, static_cast<float>(this->size * 55) - 1));
